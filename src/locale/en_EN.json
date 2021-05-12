@@ -1,0 +1,26 @@
+{
+    "ledger": {
+        "request_data_response_ws": {
+            "invalidParams": "One or more fields are specified incorrectly, or one or more required fields are missing.",
+            "lgrNotFound": "The ledger specified by the ledger_hash or ledger_index does not exist, or it does exist but the server does not have it.",
+            "actNotFound": "The Address specified in the account field of the request does not correspond to an account in the ledger."
+        }
+    },
+    "xapp": {
+        "button": {
+            "try_again": "try again",
+            "account_not_found_login_button": "Login (actNotFound)",
+            "close": "Close"
+        },
+        "error": {
+            "modal_title": "Oops",
+            "get_ott_data": "Failed to fetch your XUMM data",
+            "subscribe_to_account": "Failed to subscribe to the XRP Ledger",
+            "sign_offer_create": "A wild error occured creating an Offer",
+            "signin": "A wild error occured trying to login",
+            "get_offer_data": "A wild error occured trying to get your Offer data",
+            "get_curated_assets": "Currency list is not available from the API",
+            "react_native_webview": "There is an error with the webview"
+        }
+    }
+}
