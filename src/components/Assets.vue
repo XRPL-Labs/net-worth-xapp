@@ -231,14 +231,14 @@ export default {
             })
         }
 
-        try {
-            const res = await fetch('https://tokens.xumm.community/api/v1/tokens')
-            // const res = await axios.get('https://tokens.xumm.community/api/v1/tokens')
-            this.tokens = res.tokens
-        } catch(e) {
-            // alert('error with nixer API')
-            // alert(e)
-        }
+        // try {
+        //     const res = await fetch('https://tokens.xumm.community/api/v1/tokens')
+        //     // const res = await axios.get('https://tokens.xumm.community/api/v1/tokens')
+        //     this.tokens = res.tokens
+        // } catch(e) {
+        //     // alert('error with nixer API')
+        //     // alert(e)
+        // }
         this.loading = false
     },
     async mounted() {
