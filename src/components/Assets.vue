@@ -1,4 +1,5 @@
 <template>
+    <h4>{{ $t('xapp.headers.portfolio_balance') }}</h4>
     <h2 class="number" @click="changeCurrency">{{ activeCurrency === 'XRP' ? $xapp.currencyFormat(totalXRPValue, activeCurrency) : $xapp.currencyFormat(totalXRPValue / 1_000_000 * rate, activeCurrency) }} {{ activeCurrency }}</h2>
     <div id="asset-container" class="column">
         <ul>
@@ -6,10 +7,10 @@
                 <img :src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'">
                 <div class="row">
                     <h5>XRP</h5>
-                    <h5 v-if="activeCurrency === 'XRP'" class="number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h5>
+                    <h5 v-if="activeCurrency === 'XRP'" class=" pushnumber">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h5>
                     <div v-else class="asset-values" style="margin-left: auto">
-                        <h5 class="number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance * rate / 1_000_000, activeCurrency) }} {{ activeCurrency }}</h5>
-                        <h6 class="number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h6>
+                        <h5 class="push number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance * rate / 1_000_000, activeCurrency) }} {{ activeCurrency }}</h5>
+                        <h6 class="push number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h6>
                     </div>
                 </div>
             </li>
@@ -19,10 +20,10 @@
                     <img :src="getFirstObject(curatedCurrencies[currency], 'avatar') ? getFirstObject(curatedCurrencies[currency], 'avatar') : 'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'">
                     <div class="row">
                         <h5>{{ getFirstObject(curatedCurrencies[currency], 'name') ? getFirstObject(curatedCurrencies[currency], 'name') : $xapp.currencyCodeFormat(currency, 16) }}</h5>
-                        <h5 v-if="activeCurrency === currency" class="number">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</h5>
+                        <h5 v-if="activeCurrency === currency" class="push number">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</h5>
                         <div v-else class="asset-values" style="margin-left: auto">
-                            <h5 class="number">{{ activeCurrency === 'XRP' ? $xapp.currencyFormat(accountCurrencies[currency].value * 1_000_000, 'XRP') : $xapp.currencyFormat(accountCurrencies[currency].value * rate, activeCurrency) }} {{ activeCurrency }}</h5>
-                            <h6 class="number">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</h6>
+                            <h5 class="push number">{{ activeCurrency === 'XRP' ? $xapp.currencyFormat(accountCurrencies[currency].value * 1_000_000, 'XRP') : $xapp.currencyFormat(accountCurrencies[currency].value * rate, activeCurrency) }} {{ activeCurrency }}</h5>
+                            <h6 class="push number">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</h6>
                         </div>
                     </div>
                 </div>
@@ -270,6 +271,18 @@ export default {
 .asset-values {
     display: flex;
     flex-direction: column;
+}
+.push {
+    margin-left: auto !important;
+}
+h2 {
+    margin: 0;
+}
+h4 {
+    margin: 0;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 14px;
 }
 h5 {
     margin: 0;

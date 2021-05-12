@@ -7,6 +7,9 @@
         }
     },
     "xapp": {
+        "headers": {
+            "portfolio_balance": "Balance Portfolio"
+        },
         "button": {
             "try_again": "try again",
             "account_not_found_login_button": "Login (actNotFound)",
