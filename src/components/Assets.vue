@@ -7,7 +7,7 @@
                 <img :src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'">
                 <div class="row">
                     <h5>XRP</h5>
-                    <h5 v-if="activeCurrency === 'XRP'" class=" pushnumber">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h5>
+                    <h5 v-if="activeCurrency === 'XRP'" class="push number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h5>
                     <div v-else class="asset-values" style="margin-left: auto">
                         <h5 class="push number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance * rate / 1_000_000, activeCurrency) }} {{ activeCurrency }}</h5>
                         <h6 class="push number">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</h6>
