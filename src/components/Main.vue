@@ -63,6 +63,7 @@ export default {
                     command: 'subscribe',
                     accounts: [account]
                 })
+                this.$emitter.emit('accountChange')
             } catch(e) {
                 if(e.error !== false) {
                     this.$emitter.emit('modal', {

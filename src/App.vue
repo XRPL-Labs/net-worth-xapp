@@ -84,7 +84,8 @@ export default {
             // todo DELETE MEEE ASAP ONLY FOR TESTING ON LOCALHOST
             if (typeof window.ReactNativeWebView === 'undefined') {
                 this.data = {
-                    account: 'rJR4MQt2egH9AmibZ8Hu5yTKVuLPv1xumm',
+                    account: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ',
+                    // account: 'rJR4MQt2egH9AmibZ8Hu5yTKVuLPv1xumm',
                     nodetype: 'MAINNET',
                     // account: 'rMtfWxk9ZLr5mHrRzJMnaE5x1fqN3oPdJ7',
                     // nodetype: 'TESTNET'
@@ -144,6 +145,9 @@ export default {
 @import url('https://use.typekit.net/iqo4nny.css');
 @import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono');
 
+.push {
+    margin-left: auto !important;
+}
 .number {
     font-family: 'Ubuntu Mono' !important;
 }

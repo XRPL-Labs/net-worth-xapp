@@ -130,6 +130,22 @@ export default {
             return 'Unknown'
         }
 
+        const getAssetDetails = (currency, issuer) => {
+            const curatedAssets = state.curatedAssets
+            if(issuer === null) return null
+            for(const exchange in curatedAssets.details) {
+                if(!curatedAssets.details[exchange].shortlist) continue
+                if(curatedAssets.details[exchange].currencies[currency]) {
+                    if(curatedAssets.details[exchange].currencies[currency].issuer === issuer) return curatedAssets.details[exchange]
+                }
+
+                // for(const currency in curatedAssets.details[exchange].currencies) {
+                //     if (curatedAssets.details[exchange].currencies[currency].issuer === issuer) return curatedAssets.details[exchange].name
+                // }
+            }
+            return 'Unknown'
+        }
+
         const status = (url) => {
             return new Promise((resolve, reject) => {
                 function message(event) {
@@ -238,9 +254,23 @@ export default {
 
             var hex = string.toString()
             var str = ''
-            for (var n = 0; n < hex.length; n += 2) {
-                str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
+
+            // check for XLS15d
+            if (hex.startsWith('02')) {
+                try {
+                    const binary = Buffer.from(hex, 'hex')
+                    str = binary.slice(8).toString('utf-8');
+                } catch {
+                    for (var n = 0; n < hex.length; n += 2) {
+                        str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
+                    }
+                }
+            } else {
+                for (var n = 0; n < hex.length; n += 2) {
+                    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
+                }
             }
+
             var trimmed = str.trim()
             if(trimmed.length > maxLength) {
                 return trimmed.slice(0, maxLength)
@@ -256,6 +286,7 @@ export default {
             getTokenData,
             getCuratedAssets,
             getIssuerName,
+            getAssetDetails,
             openSignRequest,
             closeXapp,
             status,

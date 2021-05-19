@@ -16,7 +16,7 @@
             </li>
             <li class="asset" v-for="(item, currency, index) in accountCurrencies">
                 <!-- {{ Object.keys(curatedAssets).length > 0 }} -->
-                <div v-if="ready && !loading" class="row">
+                <div v-if="ready && !loading" class="row" @click="showDetails(currency, item)">
                     <img :src="getFirstObject(curatedCurrencies[currency], 'avatar') ? getFirstObject(curatedCurrencies[currency], 'avatar') : 'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'">
                     <div class="row">
                         <h5>{{ getFirstObject(curatedCurrencies[currency], 'name') ? getFirstObject(curatedCurrencies[currency], 'name') : $xapp.currencyCodeFormat(currency, 16) }}</h5>
@@ -67,9 +67,11 @@
             </li> -->
         </ul>
     </div>
+    <Details :activeCurrency="activeCurrency" :rate="rate"/>
 </template>
 
 <script>
+import Details from '@/components/AssetDetails.vue'
 import svgImg from '@/components/svg.vue'
 import axios from 'redaxios'
 
@@ -77,7 +79,7 @@ import { LiquidityCheck } from 'xrpl-orderbook-reader'
 import { ContentLoader } from 'vue-content-loader'
 
 export default {
-    components: { svgImg, ContentLoader },
+    components: { svgImg, ContentLoader, Details },
     data() {
         return {
             loading: true,
@@ -137,6 +139,28 @@ export default {
         },
     },
     methods: {
+        showDetails(currency, lines) {
+            const header = {
+                title: this.getFirstObject(this.curatedCurrencies[currency], 'name') || this.$xapp.currencyCodeFormat(currency, 16),
+                img: this.getFirstObject(this.curatedCurrencies[currency], 'avatar') || 'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png',
+                currency: currency,
+                value: lines.value,
+                balance: this.calculateAssetValue(currency)
+            }
+            const array = []
+            for(const line in lines) {
+                if(lines[line].balance) {
+                    const obj = {
+                        issuer: line,
+                        value: lines[line].balance
+                    }
+                    array.push(obj)
+                }
+            }
+            // lines = lines['currency'] = currency
+            this.$emitter.emit('details', { header: header, lines: array })
+            // console.log(lines)
+        },
         async getExchangeRate(currency) {
             const res = await this.$rippled.send({
                 "command": "account_tx",
@@ -217,9 +241,30 @@ export default {
                 this.accountCurrencies[currency].value = this.accountCurrencies[currency].value + parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
             }
         },
+        async init() {
+            this.accountTrustlines()
+            const accData = this.$xapp.getAccountData()
+            if (!accData) return {}
+            const array = accData.lines
+
+            const dataFunctions = []
+            array.forEach(line => {
+                if(line.balance > 0) {
+                    dataFunctions.push( this.bookOffers(line.currency, line.account, line.balance) )
+                } else {
+
+                }
+            })
+
+            await Promise.all(dataFunctions)
+            this.ready = true
+        }
     },
     async created() {
-        this.accountTrustlines()
+        this.$emitter.on('accountChange', () => {
+            this.ready = false 
+            this.init()
+        })
         try {
             this.curatedAssets = await this.$xapp.getCuratedAssets()
         } catch(e) {
@@ -230,7 +275,6 @@ export default {
                 buttonText: this.$t('xapp.button.close')
             })
         }
-
         // try {
         //     const res = await fetch('https://tokens.xumm.community/api/v1/tokens')
         //     // const res = await axios.get('https://tokens.xumm.community/api/v1/tokens')
@@ -241,22 +285,8 @@ export default {
         // }
         this.loading = false
     },
-    async mounted() {
-        const accData = this.$xapp.getAccountData()
-        if (!accData) return {}
-        const array = accData.lines
-
-        const dataFunctions = []
-        array.forEach(line => {
-            if(line.balance > 0) {
-                dataFunctions.push( this.bookOffers(line.currency, line.account, line.balance) )
-            } else {
-
-            }
-        })
-
-        await Promise.all(dataFunctions)
-        this.ready = true
+    mounted() {
+        this.init()
     }
 }
 </script>
@@ -271,9 +301,6 @@ export default {
 .asset-values {
     display: flex;
     flex-direction: column;
-}
-.push {
-    margin-left: auto !important;
 }
 h2 {
     margin: 0;
