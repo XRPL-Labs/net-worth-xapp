@@ -27,8 +27,9 @@ export default {
             '--var-red': '#FF5B5B',
             '--var-lightred': '#FFF5F5',
 
+            '--var-grey': '#606885',
             '--var-silver': '#ACB1C1',
-            '--var-lightgrey': '#f1f1f1',
+            '--var-light': '#F8FAFD',
 
             '--var-txt-light': '#FFF',
             '--var-txt-dark': '#000',
@@ -77,7 +78,7 @@ export default {
                 }
             } else {
                 return state.tokenData
-            }    
+            }
         }
 
         const sendCommandtoXumm = (command) => {
@@ -104,7 +105,7 @@ export default {
                 })
             } catch(e) {
                 throw e
-            }            
+            }
         }
 
         const getCuratedAssets = async () => {
@@ -223,7 +224,7 @@ export default {
 
             var integer = Math.trunc(amount)
             var decimal = amount % 1
-            
+
             switch(currency) {
                 case 'XRP':
                     return amount = Number(amount / 1_000_000).toFixed(6)
