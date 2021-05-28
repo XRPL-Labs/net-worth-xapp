@@ -1,77 +1,56 @@
 <template>
   <div class="account-card">
-    <div class="row address">
+    <h3>Account address:</h3>
+    <div class="address">
       <span class="dot" :class="[{online: online}, {offline: !online}]"></span>
       <span class="mono">{{ account }}</span>
     </div>
-    <h2 class="mono">{{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }} USD</h2>
-    <!-- <h2 class="mono" @click="changeCurrency">
-      {{
-        activeCurrency === 'XRP'
-          ? $xapp.currencyFormat(totalXRPValue, activeCurrency)
-          : $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency)
-      }}
-      {{ activeCurrency }}
-    </h2> -->
+    <h3>Total value:</h3>
+    <h2 class="mono">$ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}</h2>
   </div>
 
   <div id="asset-container" class="column">
     <ul>
       <li class="asset">
-        <div class="row">
-          <div class="assetandvalue">
-            <img :src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'" class="xrp" />
-            <h5>XRP</h5>
-            <span v-if="activeCurrency === 'XRP'" class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</span>
-            <div v-else class="asset-values" style="margin-left: auto">
-              <span class="mono">
-                {{ $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency) }} {{ activeCurrency }}
-              </span>
-              <span class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</span>
-            </div>
-          </div>
+        <img :src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'" class="currencyicon xrp" />
+        <div class="assetandvalue">
+          <h5>XRP</h5>
+          <span class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</span>
         </div>
+        <span class="mono big">
+          {{ $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency) }} {{ activeCurrency }}
+        </span>
       </li>
-      <li class="asset" v-for="(item, currency, index) in accountCurrencies" :key="index">
-        <div v-if="ready && !loading" @click="showDetails(currency, item)">
-          <img
-            :src="
-              getFirstObject(curatedCurrencies[currency], 'avatar')
-                ? getFirstObject(curatedCurrencies[currency], 'avatar')
-                : 'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'
-            "
-            class="currencyicon"
-          />
-
-          <h5>
-            {{
-              getFirstObject(curatedCurrencies[currency], 'name') ? getFirstObject(curatedCurrencies[currency], 'name') : $xapp.currencyCodeFormat(currency, 16)
-            }}
-          </h5>
-          <!-- <span v-if="activeCurrency === currency" class="mono">
-            {{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}
-        </span> -->
-          <div class="asset-values">
-            <span class="mono">
+      <li class="asset" v-for="(item, currency, index) in accountCurrencies" :key="index" @click="showDetails(currency, item)">
+        <template v-if="ready && !loading">
+          <img v-if="getFirstObject(curatedCurrencies[currency], 'avatar')" :src="getFirstObject(curatedCurrencies[currency], 'avatar')" class="currencyicon" />
+          <img v-else src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'" class="currencyicon xrp" />
+          <div class="assetandvalue">
+            <h5>
               {{
-                activeCurrency === 'XRP'
-                  ? $xapp.currencyFormat(accountCurrencies[currency].value * 1_000_000, 'XRP')
-                  : $xapp.currencyFormat(accountCurrencies[currency].value * rate, activeCurrency)
+                getFirstObject(curatedCurrencies[currency], 'name')
+                  ? getFirstObject(curatedCurrencies[currency], 'name')
+                  : $xapp.currencyCodeFormat(currency, 16)
               }}
-              {{ activeCurrency }}
-            </span>
+            </h5>
             <span class="mono">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</span>
           </div>
-        </div>
-        <div class="row" v-else>
-          <ContentLoader primaryColor="#383838" secondaryColor="#242424" :heigt="60" :width="68" preserveAspectRatio="xMidyMid" viewBox="0 0 68 60">
-            <circle cx="12.5" cy="30" r="12.5" />
-            <rect x="35" y="21" rx="3" ry="3" width="33" height="18" />
-          </ContentLoader>
-          <ContentLoader primaryColor="#383838" secondaryColor="#242424" :width="150" :height="60" viewBox="0 0 150 60">
-            <rect x="30" y="5" rx="4" ry="4" width="100" height="13" />
-            <rect x="40" y="35" rx="4" ry="4" width="100" height="10" />
-          </ContentLoader>
+          <span class="mono big">
+            {{
+              activeCurrency === 'XRP'
+                ? $xapp.currencyFormat(accountCurrencies[currency].value * 1_000_000, 'XRP')
+                : $xapp.currencyFormat(accountCurrencies[currency].value * rate, activeCurrency)
+            }}
+            {{ activeCurrency }}
+          </span>
+        </template>
+        <div class="cloader" v-else>
+          <content-loader :height="40" :width="400" :speed="2" primaryColor="#f3f3f3" secondaryColor="#dfdddd">
+            <rect x="9.5" y="6.27" rx="0" ry="0" width="39" height="39" />
+            <rect x="64.5" y="9.27" rx="0" ry="0" width="81" height="14.04" />
+            <rect x="63.5" y="28.27" rx="0" ry="0" width="123.12" height="14.04" />
+            <rect x="295.55" y="14.27" rx="0" ry="0" width="88.29" height="19.98" />
+          </content-loader>
         </div>
       </li>
 
@@ -114,7 +93,8 @@ export default {
       accountCurrencies: {},
       activeCurrency: 'USD',
       fiatCurrency: 'USD',
-      rate: 1
+      rate: 1,
+      online: false
     }
   },
   watch: {
@@ -167,6 +147,11 @@ export default {
     }
   },
   methods: {
+    async checkConnection() {
+      setInterval(() => {
+        this.online = this.$rippled.getState().online
+      }, 1000)
+    },
     showDetails(currency, lines) {
       const header = {
         title: this.getFirstObject(this.curatedCurrencies[currency], 'name') || this.$xapp.currencyCodeFormat(currency, 16),
@@ -282,6 +267,7 @@ export default {
     },
     async init() {
       this.accountTrustlines()
+      this.checkConnection()
       const accData = this.$xapp.getAccountData()
       if (!accData) return {}
       const array = accData.lines
@@ -331,33 +317,47 @@ export default {
 
 <style scoped>
 img.currencyicon {
-  width: 2.3rem;
-  height: 2.3rem;
+  width: 2rem;
+  height: 2rem;
   object-fit: cover;
   margin-right: 10px;
-  border: 1px solid var(--var-silver);
+  border: 1px solid var(--var-darker);
   border-radius: 0.5rem;
+  padding: 0.2rem;
 }
-img.xrp {
+img.currencyicon.xrp {
   width: 1.3rem;
   height: 1.3rem;
   object-fit: cover;
   margin-right: 10px;
-  border: 1px solid var(--var-light);
+  border: 1px solid var(--var-darker);
   border-radius: 0.5rem;
   padding: 0.5rem;
-  background: var(--var-light);
 }
 .account-card {
-  background: var(--var-light);
+  background: var(--var-tint-color);
   border-radius: 1rem;
   padding: 1rem;
-  height: 4rem;
+  /* height: 4rem; */
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
 }
 .account-card h3 {
   font-weight: 700 !important;
   font-family: proxima-nova, sans-serif;
+  margin: 0 0 0.2rem 0;
+  color: var(--var-grey);
+  font-size: 0.9rem;
+}
+.account-card h2.mono {
+  font-weight: 700 !important;
+  font-family: proxima-nova, sans-serif;
+  background: var(--var-darker);
+  border-radius: 0.5rem;
+  text-align: center;
+  padding: 0.5rem 1rem;
   margin: 0;
+  font-size: 1.7rem;
 }
 #asset-container {
   flex-grow: 1;
@@ -367,79 +367,48 @@ img.xrp {
   flex-direction: column;
   /* border: 1px solid purple; */
 }
+.cloader {
+  margin-left: -0.5rem;
+}
 
-.row.address {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+.address {
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* justify-content: flex-start; */
+  /* align-items: center; */
+  margin-bottom: 0.7rem;
+
+  background: var(--var-darker);
+  border-radius: 0.5rem;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  /* font-size: 1.5rem; */
   /* border: 2px solid red; */
 }
-.row.address span.mono {
-  font-size: 0.7rem;
-  font-weight: bold;
+.address span.mono {
+  font-size: 0.9rem;
 }
-.row.address span.dot {
-  width: 12px;
-  height: 12px;
+.address span.dot {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: white;
   display: inline-block;
   margin-right: 5px;
+  vertical-align: middle;
+  margin-top: -1px;
 }
-.row.address span.dot.online {
+.address span.dot.online {
   background-color: var(--var-green);
 }
-.row.address span.dot.offline {
+.address span.dot.offline {
   background-color: var(--var-red);
 }
-/*
-#asset-container::-webkit-scrollbar {
-  display: none;
-}
 .asset-values {
-  display: flex;
-  flex-direction: column;
-}
-h2 {
-  margin: 0;
-}
-h4 {
-  margin: 0;
-  font-size: 13px;
-  text-align: center;
-  margin-top: 14px;
-}
-h5 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 200;
-}
-h6 {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 100;
+  border: 1px solid red;
 }
 
-.row {
-  justify-content: space-between;
-}
-.asset {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 10px;
-  height: 40px;
-  margin: 10px 0;
-}
-.asset .row {
-  margin: 0;
-}
-#asset-container {
-  height: 100vh;
-  overflow: auto;
-}
-*/
 ul {
   list-style: none;
   margin: 0;
@@ -456,14 +425,29 @@ ul {
   /* border-radius: 15px; */
   /* color: var(--var-green); */
 }
-ul li div {
+ul li.asset {
+  padding: 0.5rem 0.5rem;
   width: calc(100% - 1rem);
-  padding: 0 0.5rem;
-  /* height: 4rem; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  /* border: 1px solid green; */
+}
+ul li.asset .assetandvalue {
+  text-align: left;
+}
+ul li.asset .assetandvalue h5 {
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: bold;
+}
+ul li.asset .assetandvalue .mono {
+  color: var(--var-grey);
+}
+
+ul li.asset .mono.big {
+  margin-left: auto;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 </style>

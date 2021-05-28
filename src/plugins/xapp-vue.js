@@ -13,7 +13,7 @@ export default {
     install: (app, options) => {
         const urlParams = new URLSearchParams(window.location.search)
         const ott = urlParams.get('xAppToken')
-        const theme = urlParams.get('xAppStyle') || 'MOONLIGHT'
+        const theme = urlParams.get('xAppStyle') || 'LIGHT'
 
         const themeStyles = {
             '--var-white': '#FFFFFF',
@@ -35,16 +35,23 @@ export default {
             '--var-txt-dark': '#000',
 
             '--var-LIGHT': '#FFFFFF',
+            '--var-LIGHT-TINT': '#F8FAFD',
             '--var-DARK': '#000000',
+            '--var-DARK-TINT': '#181A21',
             '--var-MOONLIGHT': '#181A21',
+            '--var-MOONLIGHT-TINT': '#262934',
             '--var-ROYAL': '#030B36',
+            '--var-ROYAL-TINT': '#1A2148',
 
             '--var-bg-color': `var(--var-${theme})`,
+            '--var-tint-color': `var(--var-${theme}-TINT)`,
             '--var-txt-color': theme === 'LIGHT' ? 'var(--var-txt-dark)' : 'var(--var-txt-light)',
             '--var-primary': theme === 'LIGHT' ? 'var(--var-blue)' : 'var(--var-orange)',
             '--var-secondary': theme === 'LIGHT' ? 'var(--var-silver)' : 'var(--var-black)',
 
-            '--var-border': theme === 'LIGHT' ? 'var(--var-silver)' : 'rgba(255, 255, 255, 0.26)',
+            '--var-border': theme === 'LIGHT' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.26)',
+            '--var-darker': theme === 'LIGHT' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.07)',
+            '--var-overlay': theme === 'LIGHT' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.1)',
 
             'background-color': 'var(--var-bg-color)',
             'color': 'var(--var-txt-color)'

@@ -1,8 +1,8 @@
 <template>
-  <div class="switch">
+  <!-- <div class="switch">
     <h3>{{ $t('xapp.headers.portfolio_balance') }}</h3>
     <button @click="signin()" class="btn btn-light"><fa :icon="['fas', 'random']" /> Switch account</button>
-  </div>
+  </div> -->
   <div v-if="$xapp.getAccountData() === null" class="column h-100">
     <div id="failed-start" class="column">
       <fa :icon="['fas', 'exclamation-circle']" />
@@ -111,6 +111,9 @@ export default {
   align-items: center;
   height: 60px;
   /* border: 1px solid red; */
+}
+.switch h3 {
+  margin-left: 0.5rem;
 }
 #scroll-container {
   flex-grow: 1;

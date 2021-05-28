@@ -145,7 +145,8 @@ export default {
 
 <style>
 @import url('https://use.typekit.net/iqo4nny.css');
-@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono');
+/* @import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono'); */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
 
 /* GLOBAL STYLES */
 .btn {
@@ -226,11 +227,8 @@ body {
   height: 100%;
   width: 100%;
   margin: 0;
-  /* overscroll-behavior-y: none; */
-  /* position: fixed; */
-  /* overflow: hidden; */
 }
-
+/*
 .LIGHT {
   background-color: rgb(255, 255, 255);
   color: white;
@@ -250,6 +248,7 @@ body {
   background-color: #030b36;
   color: white;
 }
+*/
 
 #view {
   height: 100vh;
