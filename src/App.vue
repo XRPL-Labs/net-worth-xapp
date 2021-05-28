@@ -4,7 +4,6 @@
     <SpinnerModal v-if="busy" />
     <Main v-if="ready" />
     <Modal />
-    <Alert />
     <div v-if="error" class="column h-100">
       <div id="failed-start" class="column">
         <fa :icon="['fas', 'exclamation-circle']" />
@@ -21,7 +20,6 @@
 import Main from '@/components/Main.vue'
 import Spinner from '@/components/Spinner.vue'
 import SpinnerModal from '@/components/SpinnerModal.vue'
-import Alert from '@/components/Alert.vue'
 import Modal from '@/components/Modal.vue'
 
 export default {
@@ -30,9 +28,7 @@ export default {
     Main,
     Spinner,
     SpinnerModal,
-    Alert,
-    Modal,
-    Alert
+    Modal
   },
   data() {
     return {
@@ -65,11 +61,6 @@ export default {
 
       const account_lines = await this.$rippled.send({
         command: 'account_lines',
-        account: this.$xapp.getAccount()
-      })
-      // if (account_lines.lines < 1) alert('no trustlines')
-      const account_objects = await this.$rippled.send({
-        command: 'account_objects',
         account: this.$xapp.getAccount()
       })
 
