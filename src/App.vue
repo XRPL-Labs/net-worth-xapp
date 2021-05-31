@@ -8,7 +8,7 @@
       <div id="failed-start" class="column">
         <fa :icon="['fas', 'exclamation-circle']" />
         <p>{{ error }}</p>
-        <a @click="console.log('jeeje')" class="btn btn-primary">
+        <a @click="subscribe()" class="btn btn-primary">
           {{ $t('xapp.button.try_again') }}
         </a>
       </div>
@@ -67,7 +67,6 @@ export default {
       const account_data = {
         account: this.$xapp.getAccount(),
         account_data: account_info.account_data,
-        objects: account_objects.account_objects,
         lines: account_lines.lines
       }
       this.$xapp.setAccountData(account_data)
@@ -168,44 +167,16 @@ export default {
 .mono {
   font-family: 'Ubuntu Mono' !important;
 }
-/*
+
 .push {
   margin-left: auto !important;
 }
-
-#failed-start {
-  align-items: center;
-  margin: auto;
-}
-.btn {
-  padding: 10px 5px;
-  border-radius: 10px;
-  width: calc(100% - 30px);
-  margin: 0 10px;
-  cursor: pointer;
-  font-weight: 700;
-  text-align: center;
-  color: var(--var-white);
-}
-.btn.btn-primary {
-  background-color: var(--var-primary);
-}
-.btn.disabled {
-  opacity: 0.5;
-}
-
-.btn-0-margin {
-  width: calc(100% - 10px);
-  margin: 0 !important;
-}
-
 .h-100 {
   height: 100%;
 }
 .margin-0 {
   margin: 0 !important;
 }
-*/
 #app {
   font-family: proxima-nova, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -219,28 +190,6 @@ body {
   width: 100%;
   margin: 0;
 }
-/*
-.LIGHT {
-  background-color: rgb(255, 255, 255);
-  color: white;
-}
-
-.DARK {
-  background-color: rgb(0, 0, 0);
-  color: white;
-}
-
-.MOONLIGHT {
-  background-color: #181a21;
-  color: white;
-}
-
-.ROYAL {
-  background-color: #030b36;
-  color: white;
-}
-*/
-
 #view {
   height: 100vh;
   padding: 0 1rem;
