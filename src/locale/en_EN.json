@@ -8,7 +8,10 @@
     },
     "xapp": {
         "headers": {
-            "portfolio_balance": "Balance Portfolio"
+            "portfolio_balance": "Balance Portfolio",
+            "totals": "Totals:",
+            "total_value": "Total value:",
+            "account_address": "Account address:"
         },
         "button": {
             "try_again": "try again",

@@ -1,11 +1,11 @@
 <template>
   <div class="account-card">
-    <h3>Account address:</h3>
+    <h3>{{ $t('xapp.headers.account_address') }}</h3>
     <div class="address">
       <span class="dot" :class="[{online: online}, {offline: !online}]"></span>
       <span class="mono">{{ account }}</span>
     </div>
-    <h3>Total value:</h3>
+    <h3>{{ $t('xapp.headers.total_value') }}</h3>
     <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">$ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}</h2>
     <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue * rate, 'XRP') }} XRP</h2>
   </div>
@@ -34,7 +34,7 @@
                   : $xapp.currencyCodeFormat(currency, 16)
               }}
             </h5>
-            <span class="mono">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</span>
+            <span v-if="activeCurrency !== currency" class="mono">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</span>
           </div>
           <span class="mono big">
             {{

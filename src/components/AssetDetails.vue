@@ -19,9 +19,9 @@
           </div>
         </li>
       </ul>
-      <h2 class="total">Totals:</h2>
+      <h2 class="total">{{ $t('xapp.headers.totals') }}</h2>
       <h3 class="mono big">{{ $xapp.currencyFormat(header.balance, header.currency) }} {{ $xapp.currencyCodeFormat(header.currency, 4) }}</h3>
-      <h3 class="mono big">
+      <h3 class="mono big" v-if="activeCurrency !== header.currency">
         {{ activeCurrency === 'XRP' ? $xapp.currencyFormat(header.value * 1_000_000, 'XRP') : $xapp.currencyFormat(header.value * rate, activeCurrency) }}
         {{ activeCurrency }}
       </h3>
