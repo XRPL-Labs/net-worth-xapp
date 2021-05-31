@@ -2,20 +2,15 @@
   <div v-show="active" @click.self="active = false" class="overlay">
     <div id="overlay-element">
       <div class="overlay-header">
-        <!-- <img :src="header.img" class="currencyicon xrp" /> -->
+        <img v-if="header.img" :src="header.img" class="currencyicon xrp" />
         <h3>{{ header.title }}</h3>
         <button @click="active = false" class="btn btn-link"><fa :icon="['fas', 'times']" /></button>
       </div>
 
       <ul>
         <li v-for="(item, issuer, index) in lines" :key="index">
-          <img
-            :src="
-              getDetails(header.currency, item.issuer).avatar ||
-                'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'
-            "
-            class="currencyicon xrp"
-          />
+          <img v-if="getDetails(header.currency, item.issuer).avatar" :src="getDetails(header.currency, item.issuer).avatar" class="currencyicon xrp" />
+          <img v-else src="../assets/png/trustline-unkown.png" class="currencyicon xrp">
           <div class="assetandvalue">
             <h5>
               {{ getDetails(header.currency, item.issuer).name || sliceAddress(item.issuer) }}

@@ -6,25 +6,26 @@
       <span class="mono">{{ account }}</span>
     </div>
     <h3>Total value:</h3>
-    <h2 class="mono">$ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}</h2>
+    <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">$ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}</h2>
+    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue * rate, 'XRP') }} XRP</h2>
   </div>
 
   <div id="asset-container" class="column">
     <ul>
       <li class="asset">
-        <img :src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'" class="currencyicon xrp" />
+        <img src="../assets/png/crypto-xrp.png" class="currencyicon xrp" />
         <div class="assetandvalue">
           <h5>XRP</h5>
           <span class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</span>
         </div>
         <span class="mono big">
-          {{ $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency) }} {{ activeCurrency }}
+          {{ activeCurrency !== 'XRP' ? $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency) : $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP')}} {{ activeCurrency }}
         </span>
       </li>
       <li class="asset" v-for="(item, currency, index) in accountCurrencies" :key="index" @click="showDetails(currency, item)">
         <template v-if="ready && !loading">
           <img v-if="getFirstObject(curatedCurrencies[currency], 'avatar')" :src="getFirstObject(curatedCurrencies[currency], 'avatar')" class="currencyicon" />
-          <img v-else src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'" class="currencyicon xrp" />
+          <img v-else src="../assets/png/trustline-unkown.png" class="currencyicon xrp" />
           <div class="assetandvalue">
             <h5>
               {{
@@ -53,21 +54,6 @@
           </content-loader>
         </div>
       </li>
-
-      <!-- TEST PURPOSES -->
-      <!-- <li class="asset" v-for="i in 10">
-                <img :src="'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png'">
-                <div class="column">
-                    <div class="row">
-                        <h5>TEST CURRENCY</h5>
-                        <h5 class="number">1.123456</h5>
-                    </div>
-                    <div class="row">
-                        <h6>TEST</h6>
-                        <h6 class="number">123</h6>
-                    </div>
-                </div>
-            </li> -->
     </ul>
   </div>
 
@@ -130,7 +116,6 @@ export default {
         if (!this.curatedAssets.details[exchange].shortlist) continue
         for (const currency in this.curatedAssets.details[exchange].currencies) {
           const details = this.curatedAssets.details[exchange].currencies[currency]
-          if (!details.shortlist) continue
 
           const issuer = details.issuer
 
@@ -157,7 +142,7 @@ export default {
         title: this.getFirstObject(this.curatedCurrencies[currency], 'name') || this.$xapp.currencyCodeFormat(currency, 16),
         img:
           this.getFirstObject(this.curatedCurrencies[currency], 'avatar') ||
-          'https://user-images.githubusercontent.com/1287855/42951396-f1d82368-8b2a-11e8-9855-e20630fc1dc0.png',
+          undefined,
         currency: currency,
         value: lines.value,
         balance: this.calculateAssetValue(currency)
@@ -172,9 +157,7 @@ export default {
           array.push(obj)
         }
       }
-      // lines = lines['currency'] = currency
       this.$emitter.emit('details', {header: header, lines: array})
-      // console.log(lines)
     },
     async getExchangeRate(currency) {
       const res = await this.$rippled.send({
@@ -194,14 +177,6 @@ export default {
       const accData = this.$xapp.getAccountData()
       if (!accData) return {}
       const array = accData.lines
-      // },
-      // changeCurrency() {
-      //   this.activeCurrency = this.activeCurrency === 'XRP' ? 'USD' : 'XRP'
-      // },
-      // accountTrustlines() {
-      //   const accData = this.$xapp.getAccountData()
-      //   if (!accData) return {}
-      //   const array = accData.lines
       const obj = {}
 
       if (Array.isArray(array) && array.length > 0) {
