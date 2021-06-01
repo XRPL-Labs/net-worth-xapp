@@ -12,7 +12,11 @@
             "totals": "Totals:",
             "total_value": "Total value:",
             "account_address": "Account address:",
-            "explain_value": "Explain Value"
+            "explain_value": "Explain Value",
+            "info_value": "Value calculation"
+        },
+        "body": {
+            "info_value": "The price for each asset is calculated using the Decentralized Exchange (DEX) on the XRP ledger. It calculates the price to liquidate the entire amount at once, this gives the most accurate calculation for any asset."
         },
         "button": {
             "try_again": "try again",

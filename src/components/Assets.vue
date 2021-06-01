@@ -7,7 +7,7 @@
     </div>
     <h3>
       {{ $t('xapp.headers.total_value') }}
-      <button class="btn btn-sm explain">
+      <button class="btn btn-sm explain" @click="$emitter.emit('info-overlay', { header: $t('xapp.headers.info_value'), body: $t('xapp.body.info_value') })">
         <fa :icon="['fas', 'info-circle']" />
         {{ $t('xapp.headers.explain_value') }}
       </button>
@@ -74,6 +74,7 @@
   </div>
 
   <Details :activeCurrency="activeCurrency" :rate="rate" />
+  <InfoOverlay />
 </template>
 
 <script>
@@ -83,9 +84,10 @@ import axios from 'redaxios'
 
 import {LiquidityCheck} from 'xrpl-orderbook-reader'
 import {ContentLoader} from 'vue-content-loader'
+import InfoOverlay from './InfoOverlay.vue'
 
 export default {
-  components: {svgImg, ContentLoader, Details},
+  components: {svgImg, ContentLoader, Details, InfoOverlay},
   data() {
     return {
       loading: true,
