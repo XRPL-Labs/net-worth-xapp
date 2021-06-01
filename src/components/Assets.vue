@@ -5,8 +5,17 @@
       <span class="dot" :class="[{online: online}, {offline: !online}]"></span>
       <span class="mono">{{ account }}</span>
     </div>
-    <h3>{{ $t('xapp.headers.total_value') }}</h3>
-    <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">$ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}</h2>
+    <h3>
+      {{ $t('xapp.headers.total_value') }}
+      <button class="btn btn-sm explain">
+        <fa :icon="['fas', 'info-circle']" />
+        Explain value
+      </button>
+    </h3>
+    <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">
+      $ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
+      <small>1 XRP = 1.01 USD</small>
+    </h2>
     <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue * rate, 'XRP') }} XRP</h2>
   </div>
 
@@ -19,7 +28,12 @@
           <span class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</span>
         </div>
         <span class="mono big">
-          {{ activeCurrency !== 'XRP' ? $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency) : $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP')}} {{ activeCurrency }}
+          {{
+            activeCurrency !== 'XRP'
+              ? $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency)
+              : $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP')
+          }}
+          {{ activeCurrency }}
         </span>
       </li>
       <li class="asset" v-for="(item, currency, index) in accountCurrencies" :key="index" @click="showDetails(currency, item)">
@@ -34,7 +48,9 @@
                   : $xapp.currencyCodeFormat(currency, 16)
               }}
             </h5>
-            <span v-if="activeCurrency !== currency" class="mono">{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</span>
+            <span v-if="activeCurrency !== currency" class="mono"
+              >{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</span
+            >
           </div>
           <span class="mono big">
             {{
@@ -140,9 +156,7 @@ export default {
     showDetails(currency, lines) {
       const header = {
         title: this.getFirstObject(this.curatedCurrencies[currency], 'name') || this.$xapp.currencyCodeFormat(currency, 16),
-        img:
-          this.getFirstObject(this.curatedCurrencies[currency], 'avatar') ||
-          undefined,
+        img: this.getFirstObject(this.curatedCurrencies[currency], 'avatar') || undefined,
         currency: currency,
         value: lines.value,
         balance: this.calculateAssetValue(currency)
@@ -324,6 +338,13 @@ img.currencyicon.xrp {
   color: var(--var-grey);
   font-size: 0.9rem;
 }
+.account-card .btn.explain {
+  padding: 0 0.2rem;
+  float: right;
+  border: none;
+  background: none;
+  margin-bottom: 0.2rem;
+}
 .account-card h2.mono {
   font-weight: 700 !important;
   font-family: proxima-nova, sans-serif;
@@ -333,6 +354,12 @@ img.currencyicon.xrp {
   padding: 0.5rem 1rem;
   margin: 0;
   font-size: 1.7rem;
+}
+.account-card h2.mono small {
+  display: block;
+  font-size: 0.8rem;
+  margin-top: 0.1rem;
+  color: var(--var-grey);
 }
 #asset-container {
   flex-grow: 1;

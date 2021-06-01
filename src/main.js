@@ -2,13 +2,13 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faArrowLeft, faArrowRight, faArrowDown, faSignInAlt, faTimesCircle, faExclamationCircle, faArrowUp, faRandom, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight, faArrowDown, faSignInAlt, faTimesCircle, faExclamationCircle, faInfoCircle, faQuestionCircle, faArrowUp, faRandom, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
-library.add(faArrowLeft, faArrowRight, faArrowUp, faArrowDown, faSignInAlt, faTimesCircle, faExclamationCircle, faRandom, faTimes)
+library.add(faArrowLeft, faArrowRight, faArrowUp, faArrowDown, faSignInAlt, faTimesCircle, faExclamationCircle, faInfoCircle, faQuestionCircle, faRandom, faTimes)
 
 const app = createApp(App)
 

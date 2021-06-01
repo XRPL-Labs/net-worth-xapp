@@ -10,7 +10,7 @@
       <ul>
         <li v-for="(item, issuer, index) in lines" :key="index">
           <img v-if="getDetails(header.currency, item.issuer).avatar" :src="getDetails(header.currency, item.issuer).avatar" class="currencyicon xrp" />
-          <img v-else src="../assets/png/trustline-unkown.png" class="currencyicon xrp">
+          <img v-else src="../assets/png/trustline-unkown.png" class="currencyicon xrp" />
           <div class="assetandvalue">
             <h5>
               {{ getDetails(header.currency, item.issuer).name || sliceAddress(item.issuer) }}
@@ -19,11 +19,15 @@
           </div>
         </li>
       </ul>
-      <h2 class="total">{{ $t('xapp.headers.totals') }}</h2>
-      <h3 class="mono big">{{ $xapp.currencyFormat(header.balance, header.currency) }} {{ $xapp.currencyCodeFormat(header.currency, 4) }}</h3>
+      <!-- <h2 class="total">{{ $t('xapp.headers.totals') }}</h2> -->
+      <h3 class="mono big">
+        {{ $xapp.currencyFormat(header.balance, header.currency) }} {{ $xapp.currencyCodeFormat(header.currency, 4) }}
+        <small>1 {{ $xapp.currencyCodeFormat(header.currency, 4) }} = 1.01 USD</small>
+      </h3>
       <h3 class="mono big" v-if="activeCurrency !== header.currency">
         {{ activeCurrency === 'XRP' ? $xapp.currencyFormat(header.value * 1_000_000, 'XRP') : $xapp.currencyFormat(header.value * rate, activeCurrency) }}
         {{ activeCurrency }}
+        <small>1 {{ activeCurrency }} = 0.0000201 {{ $xapp.currencyCodeFormat(header.currency, 4) }} </small>
       </h3>
     </div>
   </div>
@@ -106,8 +110,11 @@ export default {
   justify-content: flex-start;
   width: 100%;
 }
+.overlay-header img {
+  margin-left: 1rem;
+}
 .overlay-header h3 {
-  margin-left: 0.5rem;
+  margin-left: 0.1rem;
 }
 .overlay-header .btn {
   margin-left: auto;
@@ -161,6 +168,12 @@ h3.mono.big {
   padding: 0.5rem 1rem;
   margin: 0.5rem 1rem 0 1rem;
   font-size: 1.7rem;
+}
+h3.mono.big small {
+  display: block;
+  font-size: 0.8rem;
+  margin-top: 0.1rem;
+  color: var(--var-grey);
 }
 .imgandasset {
   display: flex;
