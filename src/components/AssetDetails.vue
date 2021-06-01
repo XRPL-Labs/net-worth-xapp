@@ -22,12 +22,11 @@
       <!-- <h2 class="total">{{ $t('xapp.headers.totals') }}</h2> -->
       <h3 class="mono big">
         {{ $xapp.currencyFormat(header.balance, header.currency) }} {{ $xapp.currencyCodeFormat(header.currency, 4) }}
-        <small>1 {{ $xapp.currencyCodeFormat(header.currency, 4) }} = 1.01 USD</small>
+        <small>1 {{ $xapp.currencyCodeFormat(header.currency, 4) }} = {{ priceFormat(activeCurrency === 'XRP' ? header.value / header.balance : (header.value * rate) / header.balance) }} {{ activeCurrency }}</small>
       </h3>
       <h3 class="mono big" v-if="activeCurrency !== header.currency">
         {{ activeCurrency === 'XRP' ? $xapp.currencyFormat(header.value * 1_000_000, 'XRP') : $xapp.currencyFormat(header.value * rate, activeCurrency) }}
-        {{ activeCurrency }}
-        <small>1 {{ activeCurrency }} = 0.0000201 {{ $xapp.currencyCodeFormat(header.currency, 4) }} </small>
+        <small>1 {{ activeCurrency }} = {{ priceFormat(activeCurrency === 'XRP' ?  header.balance / header.value : header.balance / (header.value * rate) )}} {{ $xapp.currencyCodeFormat(header.currency, 4) }}</small>
       </h3>
     </div>
   </div>
@@ -64,6 +63,23 @@ export default {
     getDetails(currency, issuer) {
       const details = this.$xapp.getAssetDetails(currency, issuer)
       return details
+    },
+    priceFormat(value) {
+      const int = Math.trunc(value)
+      const length = value.toString().length
+      let decimals = 2
+      if(length > 1) {
+          decimals = 2
+      } else {
+          if(int < 1) {
+              decimals = 4
+          } else {
+              decimals = 3
+          }
+      }
+      if(value < 1) return value.toPrecision(decimals)
+      const integerLength = (value.toFixed(0)).length
+      return value.toPrecision(decimals + integerLength)
     }
   },
   async created() {

@@ -9,12 +9,12 @@
       {{ $t('xapp.headers.total_value') }}
       <button class="btn btn-sm explain">
         <fa :icon="['fas', 'info-circle']" />
-        Explain value
+        {{ $t('xapp.headers.explain_value') }}
       </button>
     </h3>
     <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">
-      $ {{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
-      <small>1 XRP = 1.01 USD</small>
+      ${{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
+      <small>1 XRP = {{ rate }} {{ activeCurrency }}</small>
     </h2>
     <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue * rate, 'XRP') }} XRP</h2>
   </div>

@@ -11,7 +11,8 @@
             "portfolio_balance": "Balance Portfolio",
             "totals": "Totals:",
             "total_value": "Total value:",
-            "account_address": "Account address:"
+            "account_address": "Account address:",
+            "explain_value": "Explain Value"
         },
         "button": {
             "try_again": "try again",
