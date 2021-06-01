@@ -65,6 +65,7 @@ export default {
       return details
     },
     priceFormat(value) {
+      if(isNaN(value)) return '0'
       const int = Math.trunc(value)
       const length = value.toString().length
       let decimals = 2
