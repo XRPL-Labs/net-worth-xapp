@@ -1,7 +1,7 @@
 <template>
   <div class="account-card">
     <h3>{{ $t('xapp.headers.account_address') }}</h3>
-    <div class="address">
+    <div class="address" @click="$emitter.emit('account-change')">
       <span class="dot" :class="[{online: online}, {offline: !online}]"></span>
       <span class="mono">{{ account }}</span>
     </div>
