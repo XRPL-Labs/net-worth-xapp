@@ -95,10 +95,13 @@ export default {
       this.$xapp.setAccountData(account_data)
     }
   },
-  async mounted() {
+  mounted() {
     setInterval(() => {
       this.online = this.$rippled.getState().online
     }, 1000)
+    this.$emitter.on('account-change', () => {
+        this.signin()
+      })
   }
 }
 </script>
