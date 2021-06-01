@@ -344,6 +344,7 @@ img.currencyicon.xrp {
   border: none;
   background: none;
   margin-bottom: 0.2rem;
+  color: var(--var-txt-color);
 }
 .account-card h2.mono {
   font-weight: 700 !important;
