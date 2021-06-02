@@ -271,7 +271,9 @@ export default {
         }
       })
 
-      await Promise.all(dataFunctions)
+      try {
+        await Promise.all(dataFunctions)
+      } catch(e) {}
       this.ready = true
     }
   },
