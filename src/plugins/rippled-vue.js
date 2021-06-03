@@ -1,19 +1,18 @@
-import RippledWsClient from 'rippled-ws-client'
+import { XrplClient } from 'xrpl-client'
 
 let ws = null
 
 export default {
     install: (app, options) => {
-        const connect = (url, options) => {
+        const connect = async (url, options) => {
             if (ws != null) return ws
-            return new Promise((resolve, reject) => {
-                new RippledWsClient(url, options).then(connection => {
-                    ws = connection
-                    resolve(connection)
-                }).catch(error => {
-                    reject(error)
-                })
-            })
+            try {
+                const connection = new XrplClient(url, options)
+                ws = await connection.ready()
+                return ws
+            } catch(e) {
+                throw(e)
+            }
         }
 
         const getState = () => {

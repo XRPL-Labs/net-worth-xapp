@@ -14,11 +14,11 @@
     "mitt": "^2.1.0",
     "redaxios": "^0.4.1",
     "ripple-lib-transactionparser": "^0.8.2",
-    "rippled-ws-client": "^1.6.4",
     "vue": "^3.0.0",
     "vue-content-loader": "^2.0.0",
     "vue-i18n": "^9.0.0-rc.7",
     "vue-sweetalert2": "^4.2.0",
+    "xrpl-client": "^1.0.3",
     "xrpl-orderbook-reader": "^0.3.3"
   },
   "devDependencies": {
