@@ -25,7 +25,7 @@
         <small>1 {{ $xapp.currencyCodeFormat(header.currency, 4) }} = {{ priceFormat(activeCurrency === 'XRP' ? header.value / header.balance : (header.value * rate) / header.balance) }} {{ activeCurrency }}</small>
       </h3>
       <h3 class="mono big" v-if="activeCurrency !== header.currency">
-        {{ activeCurrency === 'XRP' ? $xapp.currencyFormat(header.value * 1_000_000, 'XRP') : $xapp.currencyFormat(header.value * rate, activeCurrency) }}
+        {{ activeCurrency === 'XRP' ? $xapp.currencyFormat(header.value * 1_000_000, 'XRP') : $xapp.currencyFormat(header.value * rate, activeCurrency) }} {{ activeCurrency }}
         <small>1 {{ activeCurrency }} = {{ priceFormat(activeCurrency === 'XRP' ?  header.balance / header.value : header.balance / (header.value * rate) )}} {{ $xapp.currencyCodeFormat(header.currency, 4) }}</small>
       </h3>
     </div>

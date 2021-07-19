@@ -13,7 +13,7 @@
       </button>
     </h3>
     <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">
-      ${{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
+      {{ activeCurrencySymbol }}{{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
       <small>1 XRP = {{ rate }} {{ activeCurrency }}</small>
     </h2>
     <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue * rate, 'XRP') }} XRP</h2>
@@ -80,7 +80,6 @@
 <script>
 import Details from '@/components/AssetDetails.vue'
 import svgImg from '@/components/svg.vue'
-import axios from 'redaxios'
 
 import {LiquidityCheck} from 'xrpl-orderbook-reader'
 import {ContentLoader} from 'vue-content-loader'
@@ -95,18 +94,11 @@ export default {
       curatedAssets: {},
       tokens: [],
       accountCurrencies: {},
+      activeCurrencySymbol: '$',
       activeCurrency: 'USD',
       fiatCurrency: 'USD',
       rate: 1,
       online: false
-    }
-  },
-  watch: {
-    accountCurrencies: {
-      handler: function(newVal, oldVal) {
-        this.getExchangeRate(this.fiatCurrency)
-      },
-      deep: true
     }
   },
   computed: {
@@ -114,17 +106,17 @@ export default {
       return this.$xapp.getAccount()
     },
     totalXRPValue() {
-      let value = Number(this.$xapp.getAccountData().account_data.Balance) || 0
-      for (const currency in this.accountCurrencies) {
-        if (this.accountCurrencies[currency].value) {
-          value = Number(value + this.accountCurrencies[currency].value * 1_000_000)
+      try {
+        let value = Number(this.$xapp.getAccountData().account_data.Balance) || 0
+        for (const currency in this.accountCurrencies) {
+          if (this.accountCurrencies[currency].value) {
+            value = Number(value + this.accountCurrencies[currency].value * 1_000_000)
+          }
         }
+        return value
+      } catch(e) {
+
       }
-      return value
-    },
-    issuers() {
-      const obj = this.currencyObject[this.selectedCurrency]
-      return obj
     },
     curatedCurrencies() {
       const obj = {}
@@ -176,15 +168,18 @@ export default {
       this.$emitter.emit('details', {header: header, lines: array})
     },
     async getExchangeRate(currency) {
-      const res = await this.$rippled.send({
-        command: 'account_tx',
-        account: 'rXUMMaPpZqPutoRszR29jtC8amWq3APkx',
-        ledger_index_min: -1,
-        ledger_index_max: -1,
-        limit: 1
-      })
-      // console.log(Number(res.transactions[0].tx.LimitAmount.value))
-      this.rate = Number(res.transactions[0].tx.LimitAmount.value)
+      try {
+        const res = await this.$xapp.getCurrencyRates(currency)
+        this.rate = res.XRP || 1
+        this.activeCurrencySymbol = res.__meta.currency.symbol
+      } catch(e) {
+        this.$emitter.emit('modal', {
+          type: 'error',
+          title: this.$t('xapp.error.modal_title'),
+          text: this.$t('xapp.error.get_exchange_rate'),
+          buttonText: this.$t('xapp.button.close')
+        })
+      }
     },
     changeCurrency() {
       this.activeCurrency = this.activeCurrency === 'XRP' ? 'USD' : 'XRP'
@@ -257,6 +252,11 @@ export default {
       }
     },
     async init() {
+      const ott = await this.$xapp.getTokenData()
+      this.fiatCurrency = ott.currency || 'USD'
+      this.activeCurrency = ott.currency || 'USD'
+      this.getExchangeRate(this.fiatCurrency)
+      
       this.accountTrustlines()
       this.checkConnection()
       const accData = this.$xapp.getAccountData()
@@ -273,7 +273,9 @@ export default {
 
       try {
         await Promise.all(dataFunctions)
-      } catch(e) {}
+      } catch(e) {
+        alert(e)
+      }
       this.ready = true
     }
   },

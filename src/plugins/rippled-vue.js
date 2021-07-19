@@ -7,8 +7,8 @@ export default {
         const connect = async (url, options) => {
             if (ws != null) return ws
             try {
-                const connection = new XrplClient(url, options)
-                ws = await connection.ready()
+                ws = new XrplClient(url, options)
+                // ws = await connection.ready()
                 return ws
             } catch(e) {
                 throw(e)

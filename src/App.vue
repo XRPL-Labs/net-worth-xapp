@@ -4,8 +4,8 @@
     <SpinnerModal v-if="busy" />
     <Main v-if="ready" />
     <Modal />
-    <div v-if="error" class="column h-100">
-      <div id="failed-start" class="column">
+    <div v-if="error" class="row h-100">
+      <div class="column failed-start">
         <fa :icon="['fas', 'exclamation-circle']" />
         <p>{{ error }}</p>
         <a @click="subscribe()" class="btn btn-primary">
@@ -47,6 +47,7 @@ export default {
     try {
       await this.getTokenData()
       await this.subscribe()
+      this.ready = true
     } catch (e) {
       this.busy = false
     }
@@ -76,13 +77,14 @@ export default {
       // todo DELETE MEEE ASAP ONLY FOR TESTING ON LOCALHOST
       if (typeof window.ReactNativeWebView === 'undefined') {
         this.data = {
-          account: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ',
+          account: 'rogue5HnPRSszD9CWGSUz8UGHMVwSSKF6',
+          // account: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ',
           // account: 'rJR4MQt2egH9AmibZ8Hu5yTKVuLPv1xumm',
           nodetype: 'MAINNET'
           // account: 'rMtfWxk9ZLr5mHrRzJMnaE5x1fqN3oPdJ7',
           // nodetype: 'TESTNET'
         }
-        this.$xapp.setAccount(this.data.account)
+        await this.$xapp.setAccount(this.data.account)
       } else {
         try {
           this.data = await this.$xapp.getTokenData()
@@ -95,17 +97,17 @@ export default {
       }
     },
     async subscribe() {
-      this.busy = true
+      // this.busy = true
       try {
         const url = this.getWebSocketUrl(this.data.nodetype)
-        const ws = await this.$rippled.connect(url, {NoUserAgent: true, MaxConnectTryCount: 5})
+        this.$rippled.connect(url, {NoUserAgent: true, MaxConnectTryCount: 5})
         await this.setAccountData()
-        await ws.send({
+        this.$rippled.send({
           command: 'subscribe',
           accounts: [this.data.account]
         })
 
-        ws.on('transaction', (tx) => {
+        this.$rippled.on('transaction', (tx) => {
           this.setAccountData()
           this.$xapp.onTransaction(tx)
         })
@@ -139,6 +141,9 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
 
 /* GLOBAL STYLES */
+.failed-start {
+  align-items: center;
+}
 .btn {
   font-size: 0.8rem;
   padding: 0.5rem 1rem;

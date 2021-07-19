@@ -3,8 +3,8 @@
     <h3>{{ $t('xapp.headers.portfolio_balance') }}</h3>
     <button @click="signin()" class="btn btn-light"><fa :icon="['fas', 'random']" /> Switch account</button>
   </div> -->
-  <div v-if="$xapp.getAccountData() === null" class="column h-100">
-    <div id="failed-start" class="column">
+  <div v-if="!accountIsActive" class="row h-100">
+    <div class="column failed-start">
       <fa :icon="['fas', 'exclamation-circle']" />
       <p>{{ $t('ledger.request_data_response_ws.actNotFound') }}</p>
       <a @click="signin()" class="btn btn-primary">{{ $t('xapp.button.account_not_found_login_button') }}</a>
@@ -30,6 +30,10 @@ export default {
   computed: {
     account() {
       return this.$xapp.getAccount()
+    },
+    accountIsActive() {
+      if(this.$xapp.getAccountData() === null) return false
+      else return true
     }
   },
   methods: {
@@ -113,7 +117,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  /* border: 1px solid red; */
 }
 .switch h3 {
   margin-left: 0.5rem;
@@ -124,137 +127,8 @@ export default {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid orange; */
 }
 #scroll-container::-webkit-scrollbar {
   display: none;
 }
-/*
-.payment-card {
-  border: solid 1px black;
-  width: 90%;
-  height: 100%;
-  margin: 10px 0;
-  text-align: center;
-}
-h2 {
-  text-align: center;
-}
-h3 {
-  margin: 0;
-  font-size: 16px;
-}
-h6 {
-  margin: 0;
-}
-.align-end {
-  text-align: end;
-}
-hr {
-  margin: 0;
-  border: 0;
-  border-top: 1px solid var(--var-border);
-  width: 100%;
-}
-hr.divide {
-  border: 1px solid black;
-  width: 110%;
-}
-.container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-}
-.btn.btn-secondary {
-  background-color: var(--var-secondary) !important;
-  color: grey !important;
-}
-.btn.btn-success {
-  background-color: var(--var-green);
-}
-.btn.btn-cancel {
-  background-color: var(--var-red);
-}
-.btn.btn-warning {
-  background-color: var(--var-orange);
-}
-.btn.label {
-  padding: 5px !important;
-  border-radius: 15px !important;
-}
-.header {
-  margin: 10px;
-  text-align: center;
-  color: var(--var-primary);
-}
-.input-error {
-  border-color: red !important;
-}
-.input-label {
-  width: 100%;
-  text-align: center;
-  padding: 10px 5px;
-  font-size: 14px;
-  border-radius: 10px;
-  border: 1px solid var(--var-border);
-  position: relative;
-}
-.input-label:focus-within {
-  border: 1px solid var(--var-primary);
-}
-.input-label label {
-  position: absolute;
-  top: 0;
-  right: 8px;
-  bottom: 0;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.input-label input {
-  color: var(--var-txt-color);
-  background-color: var(--var-bg-color);
-  border: 0;
-  text-align-last: center;
-  font-family: 'Ubuntu Mono' !important;
-  width: calc(100% - 8px);
-}
-.input-label input:focus {
-  outline: 0;
-}
-select {
-  -webkit-appearance: none;
-}
-select {
-  width: 100%;
-  color: var(--var-txt-color);
-  background-color: var(--var-bg-color);
-}
-select {
-  text-align: center;
-  text-align-last: center;
-  padding: 10px 5px;
-  font-size: 14px;
-  border-radius: 10px;
-  border: 1px solid var(--var-border);
-}
-select.arrow {
-  background-image: linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%);
-  background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
-}
-select:focus {
-  border: 1px solid var(--var-primary);
-}
-select.arrow:focus {
-  background-image: linear-gradient(45deg, gray 50%, transparent 50%), linear-gradient(135deg, transparent 50%, gray 50%);
-  background-position: calc(100% - 15px) 1em, calc(100% - 20px) 1em;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
-  outline: 0;
-} */
 </style>

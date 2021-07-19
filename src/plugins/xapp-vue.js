@@ -185,6 +185,15 @@ export default {
             }
         }
 
+        const getCurrencyRates = async (currency) => {
+            try {
+                const res = await axios.get(`${api}/rates/${currency}`, headers())
+                return res.data
+            } catch(e) {
+                throw e
+            }
+        }
+
         const getAccount = () => {
             return state.account
         }
@@ -235,6 +244,7 @@ export default {
             switch(currency) {
                 case 'XRP':
                     return amount = Number(amount / 1_000_000).toFixed(6)
+                case 'GBP':
                 case 'EUR':
                 case 'USD':
                     decimal = decimal.toFixed(2)
@@ -292,6 +302,7 @@ export default {
             themeStyles: themeStyles,
             endpoint: api,
             getTokenData,
+            getCurrencyRates,
             getCuratedAssets,
             getIssuerName,
             getAssetDetails,
