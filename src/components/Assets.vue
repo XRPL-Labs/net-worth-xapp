@@ -274,7 +274,7 @@ export default {
       try {
         await Promise.all(dataFunctions)
       } catch(e) {
-        alert(e)
+        console.log(e)
       }
       this.ready = true
     }
