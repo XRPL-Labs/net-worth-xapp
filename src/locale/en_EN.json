@@ -33,7 +33,7 @@
             "get_curated_assets": "Currency list is not available from the API",
             "get_exchange_rate": "Exchange rates are not available",
             "react_native_webview": "There is an error with the webview",
-            "trustline_count": "To many trustlines on this account please close this xApp"
+            "trustline_count": "This xApp is not optimised for accounts with a lot of Trust Lines. Your account has more Trust Lines than what this xApp has been developed for to work with. This is not a problem for your account. This is not a security risk. We will look to optimise this xApp for more TrustLines in the future."
         }
     }
 }
