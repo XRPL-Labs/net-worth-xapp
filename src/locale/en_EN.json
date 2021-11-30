@@ -32,7 +32,8 @@
             "get_offer_data": "A wild error occured trying to get your Offer data",
             "get_curated_assets": "Currency list is not available from the API",
             "get_exchange_rate": "Exchange rates are not available",
-            "react_native_webview": "There is an error with the webview"
+            "react_native_webview": "There is an error with the webview",
+            "trustline_count": "To many trustlines on this account please close this xApp"
         }
     }
 }

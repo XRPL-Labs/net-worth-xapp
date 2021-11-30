@@ -8,7 +8,7 @@
       <div class="column failed-start">
         <fa :icon="['fas', 'exclamation-circle']" />
         <p>{{ error }}</p>
-        <a @click="subscribe()" class="btn btn-primary">
+        <a v-if="error !== this.$t('xapp.error.trustline_count')" @click="subscribe()" class="btn btn-primary">
           {{ $t('xapp.button.try_again') }}
         </a>
       </div>
@@ -62,8 +62,13 @@ export default {
 
       const account_lines = await this.$rippled.send({
         command: 'account_lines',
-        account: this.$xapp.getAccount()
+        account: this.$xapp.getAccount(),
+        // limit: 50
       })
+      
+      if(account_lines.hasOwnProperty('marker')) {
+        throw this.$t('xapp.error.trustline_count')
+      }
 
       const account_data = {
         account: this.$xapp.getAccount(),
@@ -77,9 +82,7 @@ export default {
       // todo DELETE MEEE ASAP ONLY FOR TESTING ON LOCALHOST
       if (typeof window.ReactNativeWebView === 'undefined') {
         this.data = {
-          account: 'rogue5HnPRSszD9CWGSUz8UGHMVwSSKF6',
-          // account: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ',
-          // account: 'rJR4MQt2egH9AmibZ8Hu5yTKVuLPv1xumm',
+          account: 'rJR4MQt2egH9AmibZ8Hu5yTKVuLPv1xumm',
           nodetype: 'MAINNET'
           // account: 'rMtfWxk9ZLr5mHrRzJMnaE5x1fqN3oPdJ7',
           // nodetype: 'TESTNET'
@@ -117,15 +120,17 @@ export default {
       } catch (e) {
         this.busy = false
         console.log(e)
-        this.error = this.$t('xapp.error.subscribe_to_account')
+        if(e === this.$t('xapp.error.trustline_count')) {
+          this.error = e
+        } else this.error = this.$t('xapp.error.subscribe_to_account')
         throw e
       }
     },
     getWebSocketUrl(nodetype) {
       switch (nodetype) {
         case 'MAINNET':
-          // return 'wss://xrplcluster.com'
-          return 'wss://s1.ripple.com'
+          return 'wss://xrplcluster.com'
+          // return 'wss://s1.ripple.com'
         case 'TESTNET':
           return 'wss://testnet.xrpl-labs.com'
       }
