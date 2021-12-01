@@ -63,7 +63,7 @@ export default {
       const account_lines = await this.$rippled.send({
         command: 'account_lines',
         account: this.$xapp.getAccount(),
-        // limit: 50
+        limit: 100
       })
       
       if(account_lines.hasOwnProperty('marker')) {
