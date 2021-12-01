@@ -53,6 +53,25 @@ export default {
     }
   },
   methods: {
+    async getTrustLines() {
+      let marker
+      let Acclines
+      for(let i = 0; i < 100; i++) {
+        const account_lines = await this.$rippled.send({
+          command: 'account_lines',
+          account: this.$xapp.getAccount(),
+          marker: marker
+        })
+        Acclines = Acclines ? Acclines.concat(account_lines.lines) : account_lines.lines
+
+        if(!account_lines.hasOwnProperty('marker')) {
+          console.log(account_lines)
+          return Acclines
+        }
+        marker = account_lines.marker
+      }
+      throw this.$t('xapp.error.trustline_count')
+    },
     async setAccountData() {
       const account_info = await this.$rippled.send({
         command: 'account_info',
@@ -60,20 +79,14 @@ export default {
       })
       if (account_info.error === 'actNotFound') return this.$xapp.setAccountData(null)
 
-      const account_lines = await this.$rippled.send({
-        command: 'account_lines',
-        account: this.$xapp.getAccount(),
-        limit: 100
-      })
-      
-      if(account_lines.hasOwnProperty('marker')) {
-        throw this.$t('xapp.error.trustline_count')
-      }
+
+      const account_lines = await this.getTrustLines()
+      console.log(account_lines)
 
       const account_data = {
         account: this.$xapp.getAccount(),
         account_data: account_info.account_data,
-        lines: account_lines.lines
+        lines: account_lines
       }
       this.$xapp.setAccountData(account_data)
     },
