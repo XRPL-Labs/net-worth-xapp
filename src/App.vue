@@ -146,6 +146,8 @@ export default {
           // return 'wss://s1.ripple.com'
         case 'TESTNET':
           return 'wss://testnet.xrpl-labs.com'
+        case "CUSTOM":
+          return 'wss://s.devnet.rippletest.net:51233'
       }
       return 'wss://xrplcluster.com'
     }
