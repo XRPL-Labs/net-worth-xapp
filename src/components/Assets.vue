@@ -265,7 +265,7 @@ export default {
 
       const dataFunctions = []
       array.forEach((line) => {
-        if (line.balance > 0) {
+        if (Number(line.balance) !== 0) {
           dataFunctions.push(this.bookOffers(line.currency, line.account, line.balance))
         } else {
         }
