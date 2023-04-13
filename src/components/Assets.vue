@@ -36,27 +36,27 @@
           {{ activeCurrency }}
         </span>
       </li>
-      <li class="asset" v-for="(item, currency, index) in accountCurrencies" :key="index" @click="showDetails(currency, item)">
-        <template v-if="ready && !loading">
-          <img v-if="getFirstObject(curatedCurrencies[currency], 'avatar')" :src="getFirstObject(curatedCurrencies[currency], 'avatar')" class="currencyicon" />
+      <li class="asset" v-for="(item, index) in accountCurrenciesList" :key="index" @click="showDetails(item.currency, item)">
+        <template v-if="(!loading && item.init === true) || ready">
+          <img v-if="getFirstObject(curatedCurrencies[item.currency], 'avatar')" :src="getFirstObject(curatedCurrencies[item.currency], 'avatar')" class="currencyicon" />
           <img v-else src="../assets/png/trustline-unkown.png" class="currencyicon xrp" />
           <div class="assetandvalue">
             <h5>
               {{
-                getFirstObject(curatedCurrencies[currency], 'name')
-                  ? getFirstObject(curatedCurrencies[currency], 'name')
-                  : $xapp.currencyCodeFormat(currency, 16)
+                getFirstObject(curatedCurrencies[item.currency], 'name')
+                  ? getFirstObject(curatedCurrencies[item.currency], 'name')
+                  : $xapp.currencyCodeFormat(item.currency, 16)
               }}
             </h5>
-            <span v-if="activeCurrency !== currency" class="mono"
-              >{{ $xapp.currencyFormat(calculateAssetValue(currency), currency) }} {{ $xapp.currencyCodeFormat(currency, 4) }}</span
+            <span v-if="activeCurrency !== item.currency" class="mono"
+              >{{ $xapp.currencyFormat(calculateAssetValue(item.currency), item.currency) }} {{ $xapp.currencyCodeFormat(item.currency, 4) }}</span
             >
           </div>
           <span class="mono big">
             {{
               activeCurrency === 'XRP'
-                ? $xapp.currencyFormat(accountCurrencies[currency].value * 1_000_000, 'XRP')
-                : $xapp.currencyFormat(accountCurrencies[currency].value * rate, activeCurrency)
+                ? $xapp.currencyFormat(item.value * 1_000_000, 'XRP')
+                : $xapp.currencyFormat(item.value * rate, activeCurrency)
             }}
             {{ activeCurrency }}
           </span>
@@ -102,6 +102,13 @@ export default {
     }
   },
   computed: {
+    accountCurrenciesList() {
+      return  Object.entries(this.accountCurrencies)
+                .map(item => {
+                  return { currency: item[0], ...item[1] }
+                })
+                .sort((a, b) => b.value - a.value)
+    },
     account() {
       return this.$xapp.getAccount()
     },
@@ -226,30 +233,34 @@ export default {
       }
     },
     async bookOffers(currency, issuer, amount) {
-      const orders = new LiquidityCheck({
-        trade: {
-          from: {
-            currency: currency,
-            issuer: issuer
+      if(Number(amount) !== 0) {
+        const orders = new LiquidityCheck({
+          trade: {
+            from: {
+              currency: currency,
+              issuer: issuer
+            },
+            to: {
+              currency: 'XRP'
+            },
+            amount: amount
           },
-          to: {
-            currency: 'XRP'
+          options: {
+            rates: 'to'
           },
-          amount: amount
-        },
-        options: {
-          rates: 'to'
-        },
-        method: this.$rippled.send
-      })
-      const orderBookObj = await orders.get()
-      this.accountCurrencies[currency][issuer]['rate'] = orderBookObj.rate
-      if (typeof this.accountCurrencies[currency].value === 'undefined') {
-        this.accountCurrencies[currency]['value'] = parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
-      } else {
-        this.accountCurrencies[currency].value =
-          this.accountCurrencies[currency].value + parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
+          method: this.$rippled.send
+        })
+        const orderBookObj = await orders.get()
+        this.accountCurrencies[currency][issuer]['rate'] = orderBookObj.rate
+        if (typeof this.accountCurrencies[currency].value === 'undefined') {
+          this.accountCurrencies[currency]['value'] = parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
+        } else {
+          this.accountCurrencies[currency].value = this.accountCurrencies[currency].value + parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
+        }
       }
+
+      if(typeof this.accountCurrencies[currency] !== 'undefined') this.accountCurrencies[currency]['init'] = true
+      else this.accountCurrencies[currency] = { init: true }
     },
     async init() {
       const ott = await this.$xapp.getTokenData()
@@ -265,10 +276,7 @@ export default {
 
       const dataFunctions = []
       array.forEach((line) => {
-        if (Number(line.balance) !== 0) {
-          dataFunctions.push(this.bookOffers(line.currency, line.account, line.balance))
-        } else {
-        }
+        dataFunctions.push(this.bookOffers(line.currency, line.account, line.balance))
       })
 
       try {
@@ -294,14 +302,6 @@ export default {
         buttonText: this.$t('xapp.button.close')
       })
     }
-    // try {
-    //     const res = await fetch('https://tokens.xumm.community/api/v1/tokens')
-    //     // const res = await axios.get('https://tokens.xumm.community/api/v1/tokens')
-    //     this.tokens = res.tokens
-    // } catch(e) {
-    //     // alert('error with nixer API')
-    //     // alert(e)
-    // }
     this.loading = false
   },
   mounted() {
