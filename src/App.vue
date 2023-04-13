@@ -142,8 +142,8 @@ export default {
     getWebSocketUrl(nodetype) {
       switch (nodetype) {
         case 'MAINNET':
-          // return 'wss://xrplcluster.com'
-          return 'wss://s2.ripple.com'
+          return 'wss://xrplcluster.com'
+          // return 'wss://s2.ripple.com'
         case 'TESTNET':
           return 'wss://testnet.xrpl-labs.com'
         case "CUSTOM":
