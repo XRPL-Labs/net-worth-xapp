@@ -16,7 +16,7 @@
       {{ activeCurrencySymbol }}{{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
       <small>1 XRP = {{ rate }} {{ activeCurrency }}</small>
     </h2>
-    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue / rate, 'XRP') }} XRP</h2>
+    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat((totalXRPValue / 1_000_000), 'XRP') }} XRP</h2>
   </div>
 
   <div id="asset-container" class="column">
