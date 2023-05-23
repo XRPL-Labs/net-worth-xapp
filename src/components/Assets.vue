@@ -12,7 +12,7 @@
         {{ $t('xapp.headers.explain_value') }}
       </button>
     </h3>
-    <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="">
+    <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="changeCurrency()">
       {{ activeCurrencySymbol }}{{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
       <small>1 XRP = {{ rate }} {{ activeCurrency }}</small>
     </h2>
