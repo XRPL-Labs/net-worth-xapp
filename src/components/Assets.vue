@@ -16,7 +16,7 @@
       {{ activeCurrencySymbol }}{{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
       <small>1 XRP = {{ rate }} {{ activeCurrency }}</small>
     </h2>
-    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue * rate, 'XRP') }} XRP</h2>
+    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue, 'XRP') }} XRP</h2>
   </div>
 
   <div id="asset-container" class="column">
@@ -97,7 +97,7 @@ export default {
       activeCurrencySymbol: '$',
       activeCurrency: 'USD',
       fiatCurrency: 'USD',
-      rate: 1,
+      rate: 0,
       online: false
     }
   },
@@ -177,7 +177,7 @@ export default {
     async getExchangeRate(currency) {
       try {
         const res = await this.$xapp.getCurrencyRates(currency)
-        this.rate = res.XRP || 1
+        this.rate = res.XRP || 0
         this.activeCurrencySymbol = res.__meta.currency.symbol
       } catch(e) {
         this.$emitter.emit('modal', {
