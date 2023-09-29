@@ -25,7 +25,7 @@
         },
         "error": {
             "modal_title": "Oops",
-            "get_ott_data": "Failed to fetch your XUMM data",
+            "get_ott_data": "Failed to fetch your Xaman data",
             "subscribe_to_account": "Failed to subscribe to the XRP Ledger",
             "sign_offer_create": "A wild error occured creating an Offer",
             "signin": "A wild error occured trying to login",
