@@ -115,7 +115,7 @@ export default {
     async subscribe() {
       // this.busy = true
       try {
-        const url = this.getWebSocketUrl(this.data.nodetype)
+        const url = this.data.nodewss
         this.$rippled.connect(url, {NoUserAgent: true, MaxConnectTryCount: 5})
         await this.setAccountData()
         this.$rippled.send({
@@ -138,18 +138,6 @@ export default {
         } else this.error = this.$t('xapp.error.subscribe_to_account')
         throw e
       }
-    },
-    getWebSocketUrl(nodetype) {
-      switch (nodetype) {
-        case 'MAINNET':
-          return 'wss://xrplcluster.com'
-          // return 'wss://s2.ripple.com'
-        case 'TESTNET':
-          return 'wss://testnet.xrpl-labs.com'
-        case "CUSTOM":
-          return 'wss://s.devnet.rippletest.net:51233'
-      }
-      return 'wss://xrplcluster.com'
     }
   }
 }
