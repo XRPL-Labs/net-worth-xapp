@@ -107,7 +107,7 @@ export default {
           this.$xapp.setAccount(this.data.account)
         } catch (e) {
           this.busy = false
-          this.error = this.$t('xapp.error.get_ott_data')
+          this.error = this.$t('xapp.error.get_ott_data') + '(' + (e?.message || '?') + ')'
           throw e
         }
       }
