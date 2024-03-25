@@ -92,13 +92,24 @@ export default {
     },
     async getTokenData() {
       this.busy = true
-      try {
-        this.data = await this.$xapp.getTokenData()
-        this.$xapp.setAccount(this.data.account)
-      } catch (e) {
-        this.busy = false
-        this.error = this.$t('xapp.error.get_ott_data')
-        throw e
+      // todo DELETE MEEE ASAP ONLY FOR TESTING ON LOCALHOST
+      if (typeof window.ReactNativeWebView === 'undefined') {
+        this.data = {
+          account: 'rJR4MQt2egH9AmibZ8Hu5yTKVuLPv1xumm',
+          nodetype: 'MAINNET'
+          // account: 'rMtfWxk9ZLr5mHrRzJMnaE5x1fqN3oPdJ7',
+          // nodetype: 'TESTNET'
+        }
+        await this.$xapp.setAccount(this.data.account)
+      } else {
+        try {
+          this.data = await this.$xapp.getTokenData()
+          this.$xapp.setAccount(this.data.account)
+        } catch (e) {
+          this.busy = false
+          this.error = this.$t('xapp.error.get_ott_data')
+          throw e
+        }
       }
     },
     async subscribe() {
