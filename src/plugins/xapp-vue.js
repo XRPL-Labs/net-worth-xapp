@@ -264,6 +264,28 @@ export default {
             return isValid
         }
 
+        const hexToString = (hex) => {
+            let temp = ''
+            for (var n = 0; n < hex.length; n += 2) {
+                temp += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+            }
+            return temp.trim();
+        }
+
+        const parseCurrencyCode = (code) => {
+            if(!isHex(code)) return code;
+            var hex = code.toString();
+            switch (hex.substring(0, 2)) {
+                case '02':
+                    const binary = Buffer.from(hex, 'hex');
+                    return binary.slice(8).toString('utf-8').trim();
+                case '03':
+                    return code
+                default:
+                    return hexToString(code)
+            }
+        }
+
         const currencyCodeFormat = (code, maxLength = 4) => {
             if (typeof code !== 'string') return '---';
         
@@ -272,44 +294,26 @@ export default {
                 if(code.slice(0, 2) === '03') return currencies[code]
                 else return currencies[code].slice(0, maxLength)
             }
-        
-            if(!isHex(code)) {
-                currencies[code] = code
-                return currencies[code]
-            }
-        
-            var hex = code.toString();
+
             try {
-                switch (hex.substring(0, 2)) {
-                    case '02':
-                        const binary = Buffer.from(hex, 'hex');
-                        currencies[code] = binary.slice(8).toString('utf-8').trim();
-                        break;
-                    case '03':
-                        const url = `https://xumm.app/api/v1/platform/amm-meta/${hex}`;
-        
-                        currencies[code] = '-LP-';
-        
-                        fetch(url)
-                            .then(response => {
-                                if (!response.ok) throw new Error('Network response was not ok');
-                                return response.json();
-                            })
-                            .then(data => {
-                                currencies[code] = data.ammName.short;
-                            })
-                            .catch(error => {
-                                console.error('Error fetching data:', error);
-                                throw error
-                            });
-                        break;
-                    default:
-                        let temp = ''
-                        for (var n = 0; n < hex.length; n += 2) {
-                            temp += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
-                        }
-                        currencies[code] = temp.trim();
-                        break;
+                if(code.toString().substring(0, 2) === '03') {
+                    const url = `https://xumm.app/api/v1/platform/amm-meta/${code}`;
+                    currencies[code] = '-LP-';
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Network response was not ok');
+                            return response.json();
+                        })
+                        .then(data => {
+                            const name = `${isHex(data.pair[0].currency) ? hexToString(data.pair[0].currency) : data.pair[0].currency }-${isHex(data.pair[1].currency) ? hexToString(data.pair[1].currency) : data.pair[1].currency }`
+                            currencies[code] = name;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                            throw error
+                        });
+                } else {
+                    currencies[code] = parseCurrencyCode(code)
                 }
             } catch (e) {
                 currencies[code] = 'xxx'
