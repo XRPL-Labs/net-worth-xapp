@@ -9,6 +9,8 @@ const state = reactive({
     curatedAssets: {}
 })
 
+const currencies = reactive({})
+
 export default {
     install: (app, options) => {
         const urlParams = new URLSearchParams(window.location.search)
@@ -262,40 +264,58 @@ export default {
             return isValid
         }
 
-        const currencyCodeFormat = (string, maxLength) => {
-            if (typeof maxLength === 'undefined') maxLength = 4
-            if(!isHex(string)) {
-                if(string.length > maxLength) {
-                    return string.slice(0, maxLength)
-                } else return string
+        const currencyCodeFormat = (code, maxLength = 4) => {
+            if (typeof code !== 'string') return '---';
+        
+            if(currencies.hasOwnProperty(code) && typeof currencies[code] === 'string') {
+                // ●
+                if(code.slice(0, 2) === '03') return currencies[code]
+                else return currencies[code].slice(0, maxLength)
             }
-
-            var hex = string.toString()
-            var str = ''
-
-            // check for XLS15d
-            if (hex.startsWith('02')) {
-                try {
-                    const binary = Buffer.from(hex, 'hex')
-                    str = binary.slice(8).toString('utf-8');
-                } catch {
-                    for (var n = 0; n < hex.length; n += 2) {
-                        str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
-                    }
-                }
-            } else if(hex.startsWith('03')) {
-                return 'LP-'
-            } else {
-                for (var n = 0; n < hex.length; n += 2) {
-                    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
-                }
+        
+            if(!isHex(code)) {
+                currencies[code] = code
+                return currencies[code]
             }
-
-            var trimmed = str.trim()
-            if(trimmed.length > maxLength) {
-                return trimmed.slice(0, maxLength)
-            } else return trimmed
-        }
+        
+            var hex = code.toString();
+            try {
+                switch (hex.substring(0, 2)) {
+                    case '02':
+                        const binary = Buffer.from(hex, 'hex');
+                        currencies[code] = binary.slice(8).toString('utf-8').trim();
+                        break;
+                    case '03':
+                        const url = `https://xumm.app/api/v1/platform/amm-meta/${hex}`;
+        
+                        currencies[code] = '-LP-';
+        
+                        fetch(url)
+                            .then(response => {
+                                if (!response.ok) throw new Error('Network response was not ok');
+                                return response.json();
+                            })
+                            .then(data => {
+                                currencies[code] = data.ammName.short;
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                                throw error
+                            });
+                        break;
+                    default:
+                        let temp = ''
+                        for (var n = 0; n < hex.length; n += 2) {
+                            temp += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+                        }
+                        currencies[code] = temp.trim();
+                        break;
+                }
+            } catch (e) {
+                currencies[code] = 'xxx'
+            }
+            return currencies[code]
+        };
 
         app.config.globalProperties.$xapp = {
             ott: ott,
