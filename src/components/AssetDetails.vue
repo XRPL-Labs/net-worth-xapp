@@ -199,13 +199,12 @@ h3.mono.big small {
   justify-content: flex-start;
 }
 img.currencyicon {
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 3.1rem;
+  height: 3.1rem;
   object-fit: cover;
   margin-right: 10px;
   border: 2px solid var(--var-daker);
   border-radius: 0.5rem;
-  padding: 0.1rem;
 }
 img.currencyicon.xrp {
   width: 1.3rem;
@@ -214,7 +213,6 @@ img.currencyicon.xrp {
   margin-right: 10px;
   border: 2px solid var(--var-darker);
   border-radius: 0.5rem;
-  padding: 0.5rem;
   background: var(--var-darker);
 }
 </style>

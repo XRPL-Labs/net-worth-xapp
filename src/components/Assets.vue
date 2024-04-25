@@ -312,22 +312,20 @@ export default {
 
 <style scoped>
 img.currencyicon {
-  width: 2rem;
-  height: 2rem;
+  width: 2.3rem;
+  height: 2.3rem;
   object-fit: cover;
   margin-right: 10px;
   border: 1px solid var(--var-darker);
   border-radius: 0.5rem;
-  padding: 0.2rem;
 }
 img.currencyicon.xrp {
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 2.3rem;
+  height: 2.3rem;
   object-fit: cover;
   margin-right: 10px;
   border: 1px solid var(--var-darker);
   border-radius: 0.5rem;
-  padding: 0.5rem;
 }
 .account-card {
   background: var(--var-tint-color);
@@ -444,6 +442,10 @@ ul li.asset {
 }
 ul li.asset .assetandvalue {
   text-align: left;
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 ul li.asset .assetandvalue h5 {
   font-size: 0.9rem;
