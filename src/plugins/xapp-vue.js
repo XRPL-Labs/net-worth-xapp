@@ -213,7 +213,7 @@ export default {
         }
         const getAccountFunds = (currency, issuer) => {
             if(state.account_obj === null || typeof state.account_obj === undefined) return null
-            if(currency === this.$rippled.asset()) {
+            if(currency === (String(state?.tokenData?.nodetype || '').match(/xahau/) ? 'XAH' : 'XRP')) {
                 if(state.account_obj.objects === null || typeof state.account_obj.objects === undefined) return null
                 if(typeof state.account_obj.account_data === undefined || typeof state.account_obj.account_data.Balance === undefined) return null
                 const accountReserve = 20000000
@@ -242,12 +242,17 @@ export default {
 
             var integer = Math.trunc(amount)
             var decimal = amount % 1
-
             switch(currency) {
                 case 'XRP':
-                    return amount = Number(amount / 1_000_000).toFixed(6)
+                    if (!String(state?.tokenData?.nodetype || '').match(/xahau/)) {
+                        // XRP on XRPL
+                        return amount = Number(amount / 1_000_000).toFixed(6)
+                    }
                 case 'XAH':
-                    return amount = Number(amount / 1_000_000).toFixed(6)
+                    if (String(state?.tokenData?.nodetype || '').match(/xahau/)) {
+                        // XAH on Xahau
+                        return amount = Number(amount / 1_000_000).toFixed(6)
+                    }
                 case 'GBP':
                 case 'EUR':
                 case 'USD':

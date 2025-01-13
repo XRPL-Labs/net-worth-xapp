@@ -16,7 +16,7 @@
             "info_value": "Value calculation"
         },
         "body": {
-            "info_value": "The price for each asset is calculated using the Decentralized Exchange (DEX) and AMM (Automated Market Maker) on the XRP ledger, and just the Decentralized Exchange on Xahau. It calculates the value of an asset by takiing the last trade price times the amount of tokens you hold."
+            "info_value": "The price for each asset is calculated using the Decentralized Exchange (DEX) and AMM (Automated Market Maker) on the XRP ledger, and just the Decentralized Exchange on Xahau. It calculates the value of an asset by taking the last trade price times the amount of tokens you hold."
         },
         "button": {
             "try_again": "Try again",
