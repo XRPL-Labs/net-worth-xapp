@@ -251,7 +251,10 @@ export default {
               issuer: issuer
             },
             to: {
-              currency: 'XRP'
+              currency: 
+                this.nodeType === 'XAHAU'
+                  ? 'XAH'
+                  : 'XRP'
             },
             amount: amount
           },
