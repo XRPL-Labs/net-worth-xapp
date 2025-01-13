@@ -80,7 +80,7 @@
 <script>
 import Details from '@/components/AssetDetails.vue'
 import svgImg from '@/components/svg.vue'
-
+import fetch from 'node-fetch'
 import {LiquidityCheck} from 'xrpl-orderbook-reader'
 import {ContentLoader} from 'vue-content-loader'
 import InfoOverlay from './InfoOverlay.vue'
@@ -98,7 +98,8 @@ export default {
       activeCurrency: 'USD',
       fiatCurrency: 'USD',
       rate: 0,
-      online: false
+      online: false,
+      nodeType: 'MAINNET'
     }
   },
   computed: {
@@ -178,6 +179,7 @@ export default {
       try {
         const res = await this.$xapp.getCurrencyRates(currency)
         this.rate = res.XRP || 0
+        console.log('rate', currency, this.rate)
         this.activeCurrencySymbol = res.__meta.currency.symbol
       } catch(e) {
         this.$emitter.emit('modal', {
@@ -234,6 +236,14 @@ export default {
     },
     async bookOffers(currency, issuer, amount) {
       if(Number(amount) !== 0) {
+        const dataApiRates =
+          this.nodeType === 'MAINNET'
+          ? fetch('https://data.xrplf.org/v1/iou/exchange_rates/XRP/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
+          : this.nodeType === 'XAHAU'
+          ? fetch('https://data.xahau.network/v1/iou/exchange_rates/XAH/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
+          : Promise.resolve({ rate: null, })
+
+        console.log('bookoffers', currency, issuer, amount)
         const orders = new LiquidityCheck({
           trade: {
             from: {
@@ -250,12 +260,20 @@ export default {
           },
           method: this.$rippled.send
         })
-        const orderBookObj = await orders.get()
-        this.accountCurrencies[currency][issuer]['rate'] = orderBookObj.rate
+        const [orderBookObj, dataApiRate] = await Promise.all([
+          orders.get(),
+          dataApiRates,
+        ])
+        const useRate = dataApiRate?.rate
+          ? 1 / dataApiRate.rate
+          : orderBookObj.rate
+        console.log('apirate, bookrate', issuer, currency, 1 / dataApiRate.rate, orderBookObj.rate, { useRate, })
+        
+        this.accountCurrencies[currency][issuer]['rate'] = useRate
         if (typeof this.accountCurrencies[currency].value === 'undefined') {
-          this.accountCurrencies[currency]['value'] = parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
+          this.accountCurrencies[currency]['value'] = parseFloat(this.accountCurrencies[currency][issuer].balance) * useRate
         } else {
-          this.accountCurrencies[currency].value = this.accountCurrencies[currency].value + parseFloat(this.accountCurrencies[currency][issuer].balance) * orderBookObj.rate
+          this.accountCurrencies[currency].value = this.accountCurrencies[currency].value + parseFloat(this.accountCurrencies[currency][issuer].balance) * useRate
         }
       }
 
@@ -264,6 +282,7 @@ export default {
     },
     async init() {
       const ott = await this.$xapp.getTokenData()
+      this.nodeType = (ott?.nodetype || 'MAINNET').toUpperCase()
       this.fiatCurrency = ott.currency || 'USD'
       this.activeCurrency = ott.currency || 'USD'
       this.getExchangeRate(this.fiatCurrency)
@@ -276,7 +295,9 @@ export default {
 
       const dataFunctions = []
       array.forEach((line) => {
-        dataFunctions.push(this.bookOffers(line.currency, line.account, line.balance))
+        const r = this.bookOffers(line.currency, line.account, line.balance)
+        console.log(this.nodeType)
+        dataFunctions.push(r)
       })
 
       try {

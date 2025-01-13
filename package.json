@@ -12,6 +12,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-3",
     "core-js": "^3.6.5",
     "mitt": "^2.1.0",
+    "node-fetch": "^2.7.0",
     "redaxios": "^0.4.1",
     "ripple-lib-transactionparser": "^0.8.2",
     "vue": "^3.0.0",
