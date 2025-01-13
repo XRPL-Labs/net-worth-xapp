@@ -1,10 +1,19 @@
 import { XrplClient } from 'xrpl-client'
 
 let ws = null
+let networkUrl
+let networkAsset
 
 export default {
     install: (app, options) => {
+        const asset = () => {
+            return networkAsset
+        }
+
         const connect = async (url, options) => {
+            networkUrl = url
+            networkAsset = url.match(/xahau/) ? 'XAH' : 'XRP'
+
             if (ws != null) return ws
             try {
                 ws = new XrplClient(url, options)
@@ -16,7 +25,8 @@ export default {
         }
 
         const getState = () => {
-            return ws.getState()
+            const state = ws.getState()
+            return state
         }
 
         const close = () => {
@@ -41,7 +51,8 @@ export default {
             getState,
             close,
             send,
-            on
+            on,
+            asset,
         }
     }
 }

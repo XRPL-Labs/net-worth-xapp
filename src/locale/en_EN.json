@@ -26,7 +26,7 @@
         "error": {
             "modal_title": "Oops",
             "get_ott_data": "Failed to fetch your Xaman data",
-            "subscribe_to_account": "Failed to subscribe to the XRP Ledger",
+            "subscribe_to_account": "Failed to subscribe to the Ledger",
             "sign_offer_create": "A wild error occured creating an Offer",
             "signin": "A wild error occured trying to login",
             "get_offer_data": "A wild error occured trying to get your Offer data",

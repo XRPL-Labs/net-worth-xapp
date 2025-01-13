@@ -12,11 +12,11 @@
         {{ $t('xapp.headers.explain_value') }}
       </button>
     </h3>
-    <h2 v-if="activeCurrency !== 'XRP'" class="mono" @click="changeCurrency()">
+    <h2 v-if="activeCurrency !== $rippled.asset()" class="mono" @click="changeCurrency()">
       {{ activeCurrencySymbol }}{{ $xapp.currencyFormat((totalXRPValue / 1_000_000) * rate, activeCurrency) }}
-      <small>1 XRP = {{ rate }} {{ activeCurrency }}</small>
+      <small>1 {{ $rippled.asset() }} = {{ rate }} {{ activeCurrency }}</small>
     </h2>
-    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue, 'XRP') }} XRP</h2>
+    <h2 v-else class="mono" @click="changeCurrency()">{{ $xapp.currencyFormat(totalXRPValue, $rippled.asset()) }} {{ $rippled.asset() }}</h2>
   </div>
 
   <div id="asset-container" class="column">
@@ -24,14 +24,14 @@
       <li class="asset">
         <img src="../assets/png/crypto-xrp.png" class="currencyicon xrp" />
         <div class="assetandvalue">
-          <h5>XRP</h5>
-          <span class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP') }} XRP</span>
+          <h5>{{ $rippled.asset() }}</h5>
+          <span class="mono">{{ $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, $rippled.asset()) }} {{ $rippled.asset() }}</span>
         </div>
         <span class="mono big">
           {{
-            activeCurrency !== 'XRP'
+            activeCurrency !== $rippled.asset()
               ? $xapp.currencyFormat(($xapp.getAccountData().account_data.Balance * rate) / 1_000_000, activeCurrency)
-              : $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, 'XRP')
+              : $xapp.currencyFormat($xapp.getAccountData().account_data.Balance, $rippled.asset())
           }}
           {{ activeCurrency }}
         </span>
@@ -54,8 +54,8 @@
           </div>
           <span class="mono big">
             {{
-              activeCurrency === 'XRP'
-                ? $xapp.currencyFormat(item.value * 1_000_000, 'XRP')
+              activeCurrency === $rippled.asset()
+                ? $xapp.currencyFormat(item.value * 1_000_000, $rippled.asset())
                 : $xapp.currencyFormat(item.value * rate, activeCurrency)
             }}
             {{ activeCurrency }}
@@ -178,7 +178,7 @@ export default {
     async getExchangeRate(currency) {
       try {
         const res = await this.$xapp.getCurrencyRates(currency)
-        this.rate = res.XRP || 0
+        this.rate = res[this.$rippled.asset()] || 0
         console.log('rate', currency, this.rate)
         this.activeCurrencySymbol = res.__meta.currency.symbol
       } catch(e) {
@@ -191,7 +191,7 @@ export default {
       }
     },
     changeCurrency() {
-      this.activeCurrency = this.activeCurrency === 'XRP' ? 'USD' : 'XRP'
+      this.activeCurrency = this.activeCurrency === this.$rippled.asset() ? 'USD' : this.$rippled.asset()
     },
     accountTrustlines() {
       const accData = this.$xapp.getAccountData()

@@ -22,11 +22,11 @@
       <!-- <h2 class="total">{{ $t('xapp.headers.totals') }}</h2> -->
       <h3 class="mono big">
         {{ $xapp.currencyFormat(header.balance, header.currency) }} {{ $xapp.currencyCodeFormat(header.currency, 4) }}
-        <small>1 {{ $xapp.currencyCodeFormat(header.currency, 4) }} = {{ priceFormat(activeCurrency === 'XRP' ? header.value / header.balance : (header.value * rate) / header.balance) }} {{ activeCurrency }}</small>
+        <small>1 {{ $xapp.currencyCodeFormat(header.currency, 4) }} = {{ priceFormat(activeCurrency === $rippled.asset() ? header.value / header.balance : (header.value * rate) / header.balance) }} {{ activeCurrency }}</small>
       </h3>
       <h3 class="mono big" v-if="activeCurrency !== header.currency">
-        {{ activeCurrency === 'XRP' ? $xapp.currencyFormat(header.value * 1_000_000, 'XRP') : $xapp.currencyFormat(header.value * rate, activeCurrency) }} {{ activeCurrency }}
-        <small>1 {{ activeCurrency }} = {{ priceFormat(activeCurrency === 'XRP' ?  header.balance / header.value : header.balance / (header.value * rate) )}} {{ $xapp.currencyCodeFormat(header.currency, 4) }}</small>
+        {{ activeCurrency === $rippled.asset() ? $xapp.currencyFormat(header.value * 1_000_000, $rippled.asset()) : $xapp.currencyFormat(header.value * rate, activeCurrency) }} {{ activeCurrency }}
+        <small>1 {{ activeCurrency }} = {{ priceFormat(activeCurrency === $rippled.asset() ?  header.balance / header.value : header.balance / (header.value * rate) )}} {{ $xapp.currencyCodeFormat(header.currency, 4) }}</small>
       </h3>
     </div>
   </div>

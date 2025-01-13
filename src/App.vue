@@ -79,7 +79,6 @@ export default {
       })
       if (account_info.error === 'actNotFound') return this.$xapp.setAccountData(null)
 
-
       const account_lines = await this.getTrustLines()
       console.log(account_lines)
 
@@ -116,6 +115,9 @@ export default {
           this.setAccountData()
           this.$xapp.onTransaction(tx)
         })
+
+        await this.$rippled.asset()
+
         this.busy = false
         this.ready = true
         this.error = false
