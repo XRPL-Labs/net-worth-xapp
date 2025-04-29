@@ -238,7 +238,7 @@ export default {
       if(Number(amount) !== 0) {
         const dataApiRates =
           this.nodeType === 'MAINNET'
-          ? fetch('https://data.xrplf.org/v1/iou/exchange_rates/XRP/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
+          ? fetch('https://xrpldata.inftf.org/v1/iou/exchange_rates/XRP/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
           : this.nodeType === 'XAHAU'
           ? fetch('https://data.xahau.network/v1/iou/exchange_rates/XAH/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
           : Promise.resolve({ rate: null, })
