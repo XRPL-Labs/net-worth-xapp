@@ -265,11 +265,15 @@ export default {
         })
         const [orderBookObj, dataApiRate] = await Promise.all([
           orders.get(),
-          dataApiRates,
+          // dataApiRates, // Temp disable data api
         ])
-        const useRate = dataApiRate?.rate
-          ? 1 / dataApiRate.rate
-          : orderBookObj.rate
+        
+        // const useRate = dataApiRate?.rate
+        //   ? 1 / dataApiRate.rate
+        //   : orderBookObj.rate
+
+        const useRate = orderBookObj.rate
+        
         console.log('apirate, bookrate', issuer, currency, 1 / dataApiRate.rate, orderBookObj.rate, { useRate, })
         
         this.accountCurrencies[currency][issuer]['rate'] = useRate
