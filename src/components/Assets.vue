@@ -236,12 +236,12 @@ export default {
     },
     async bookOffers(currency, issuer, amount) {
       if(Number(amount) !== 0) {
-        // const dataApiRates =
-        //   this.nodeType === 'MAINNET'
-        //   ? fetch('https://xrpldata.inftf.org/v1/iou/exchange_rates/XRP/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
-        //   : this.nodeType === 'XAHAU'
-        //   ? fetch('https://data.xahau.network/v1/iou/exchange_rates/XAH/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
-        //   : Promise.resolve({ rate: null, })
+        const dataApiRates =
+          this.nodeType === 'MAINNET'
+          ? fetch('https://xrpldata.inftf.org/v1/iou/exchange_rates/XRP/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
+          : this.nodeType === 'XAHAU'
+          ? fetch('https://data.xahau.network/v1/iou/exchange_rates/XAH/' + issuer + '_' + currency).then(f => f.json()).catch(e => console.log('data api error', e.message))
+          : Promise.resolve({ rate: null, })
 
         console.log('bookoffers', currency, issuer, amount)
         const orders = new LiquidityCheck({
@@ -269,13 +269,17 @@ export default {
         //   // dataApiRates, // Temp disable data api
         // ])
 
-        const orderBookObj = await orders.get()
+        // const orderBookObj = await orders.get()
+
+        const dataApiRate = await dataApiRates
         
         // const useRate = dataApiRate?.rate
         //   ? 1 / dataApiRate.rate
         //   : orderBookObj.rate
 
-        const useRate = orderBookObj.rate
+        // const useRate = orderBookObj.rate
+
+        const useRate = 1 / dataApiRate.rate
         
         // console.log('apirate, bookrate', issuer, currency, 1 / dataApiRate.rate, orderBookObj.rate, { useRate, })
         
