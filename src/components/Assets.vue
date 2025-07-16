@@ -264,23 +264,20 @@ export default {
           method: this.$rippled.send
         })
         
-        // const [orderBookObj, dataApiRate] = await Promise.all([
-        //   orders.get(),
-        //   // dataApiRates, // Temp disable data api
-        // ])
+        const [orderBookObj, dataApiRate] = await Promise.all([
+          orders.get(),
+          dataApiRates,
+        ])
 
         // const orderBookObj = await orders.get()
-
-        const dataApiRate = await dataApiRates
+        // const dataApiRate = await dataApiRates
         
-        // const useRate = dataApiRate?.rate
-        //   ? 1 / dataApiRate.rate
-        //   : orderBookObj.rate
+        const useRate = dataApiRate?.rate
+          ? 1 / dataApiRate.rate
+          : orderBookObj.rate
 
         // const useRate = orderBookObj.rate
-
-        const useRate = 1 / dataApiRate.rate
-        
+        // const useRate = 1 / dataApiRate.rate
         // console.log('apirate, bookrate', issuer, currency, 1 / dataApiRate.rate, orderBookObj.rate, { useRate, })
         
         this.accountCurrencies[currency][issuer]['rate'] = useRate
